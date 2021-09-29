@@ -71,6 +71,9 @@ while st == True:
 		print('Observations Selected:')
 		for i in observations:
 			print(i)
+	elif enter == None or enter == '':
+		print('Nothing entered...')
+		print('!!!ENTER SOMETHING!!!')
 	else:
 		observations.append(enter)
 		row = xti.loc[xti['OBSID'] == enter]
