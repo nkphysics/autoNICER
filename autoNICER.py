@@ -73,6 +73,10 @@ while st == True:
 	elif enter == None or enter == '':
 		print('Nothing entered...')
 		print('!!!ENTER SOMETHING!!!')
+	elif enter == 'back' or enter == 'Back' or enter == 'BACK':
+		print('Old Que: ' + str(observations))
+		del observations[-1]
+		print('New Que: ' + str(observations))
 	else:
 		observations.append(enter)
 		row = xti.loc[xti['OBSID'] == enter]
