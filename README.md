@@ -1,11 +1,41 @@
 # autoNICER
-A piece of software that allows for the automated retrieval, and default data reduction of NICER data. Started by Nick Kuechel, an independent researcher, this software was developed entirely independent from the NICER team's developed tools and software. This code unaffiliated with the NICER team, NASA, the Goddard Space Flight Center (GSFC), and HEASARC. Thus, under no circumstances should anyone consider this project endorsed or recommended by the afformentioned agencies and organizations.
+A piece of software that allows for the automated retrieval, and default data reduction of NICER data. Started by Nick Kuechel, an independent researcher, this software was developed to automate the retrieval and standardardized reduction of NICER data. This project unaffiliated with the NICER team, NASA, the Goddard Space Flight Center (GSFC), and HEASARC. Thus, under no circumstances should anyone consider this project endorsed or recommended by the afformentioned agencies and organizations.
 
 Anyone considering contribiting to this project is encouraged to do so.
 
 ## Disclaimer
 
-## Pre-Requisites
+* To be filled in after adding LISENSE
+
+## Pre-Requisites Libraries and Software
+
+### Python Libraries
+1. subprocess
+2. os
+3. pandas
+4. time
+5. astropy
+6. astroquery
+7. datetime
+
+### Other software
+
+- HEASoft v6.29c <https://heasarc.gsfc.nasa.gov/docs/software/lheasoft/>
+- Remote CALDB <https://heasarc.gsfc.nasa.gov/docs/heasarc/caldb/caldb_remote_access.html>
 
 ## Usage
+
+1. Go to the HEASARC archive in your web browser and query the NICERMASTER catalog for the source of your choice.
+
+2. Navigate to the desired directory where you want the NICER data that will be retrieved to be stored.
+
+3. Run autoNICER with the following command, or better yet set up an alias in your .bashrc and call that alias (autoNICER would be a good alias).
+
+	`python3 PATH/TO/autoNICER.py` or `python PATH/TO/autoNICER.py`
+	
+4. Upon starting autoNICER you will be asked to input the  target source that you would like to query. Input the same source that you queryed in the web browser.
+
+5. Next you will be prompted to select if you want the results of this automated pipeline to be written out in a csv que. If you want to an output que written then enter "y" otherwise just hit enter/return to pass through this line.
+
+	- If you selected that you want want an output que written then create a .csv file with the header `Input,Name` and input the path to that file when prompted.
 
