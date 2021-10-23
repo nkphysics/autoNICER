@@ -31,6 +31,7 @@ print()
 obj = str(input('Target: '))
 
 q_set = str(input('Write Output Que: [n] '))
+tar_sel = str(input('Compress XTI files (.tar.gz): [y] '))
 q_path = 0
 q_name = 0
 if q_set == 'y':
@@ -137,7 +138,10 @@ for obsid in observations:
 # Here is the stuff for automatic tar.gz compression
 	base_dir = os.getcwd()
 	os.chdir(str(obsid) + '/xti/event_cl/')
-	nicer_compress()
+	if tar_sel == 'n' or tar_sel == 'N':
+		pass
+	else:
+		nicer_compress()
 	os.chdir(base_dir)
 	if q_set == 'y':
 		read_q = pd.read_csv(q_path)
