@@ -21,3 +21,4 @@ autoNICER is a program that allows individuals wanting to work with data from th
 	- Auto pulls year, month, ra, and dec
 - Added auto queing generation option 
 - Added automatic tar.gz compression to all .evt files with the exception of the bary-center correcter mpu7_cl.evt file
+- Fixed issue of outpath not being fully written out in the output que
