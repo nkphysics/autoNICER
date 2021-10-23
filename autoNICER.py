@@ -28,7 +28,6 @@ print('############               Auto NICER V2.0                  ############'
 print('########################################################################')
 print()
 
-
 obj = str(input('Target: '))
 
 q_set = str(input('Write Output Que: [n] '))
