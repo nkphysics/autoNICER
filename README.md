@@ -22,6 +22,7 @@ Anyone considering contribiting to this project is encouraged to do so.
 
 - HEASoft v6.29c <https://heasarc.gsfc.nasa.gov/docs/software/lheasoft/>
 - Remote CALDB <https://heasarc.gsfc.nasa.gov/docs/heasarc/caldb/caldb_remote_access.html>
+- wget
 
 ## Usage
 
@@ -39,3 +40,10 @@ Anyone considering contribiting to this project is encouraged to do so.
 
 	- If you selected that you want want an output que written then create a .csv file with the header `Input,Name` and input the path to that file when prompted.
 
+6. Next you will see the following prompt `Enter Observation ID or Command: `. Enter in the desired OBSID for the observation that you want retrieved and reduced. Better yet, copy the desired observation ID from the HEASARC archive and paste into the program.
+
+	- Hit enter/return after entering in the desired NICER observation ID
+	- Enter `done` in the prompt after you have entered in all your desired observation IDs
+	- Enter `sel` if you want to see the OBSIDs you have entered. Do this before you use `done`
+	
+7. You will see autoNICER start retrieving the data with wget, then that will be fed directly into `nicerl2`, then it will be barycenter corrected and lastly compressed in a .tar.gz format.
