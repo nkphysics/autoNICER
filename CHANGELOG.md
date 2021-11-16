@@ -26,3 +26,4 @@ autoNICER is a program that allows individuals wanting to work with data from th
 ### v2.1
 - Cleaned up code, reformatting it to object oriented
 - Cleaned up prompt to look more like a command prompt
+- Added cycle selection functionality with the command "cycle [cycle #]"
