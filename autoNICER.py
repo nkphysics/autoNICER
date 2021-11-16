@@ -1,13 +1,14 @@
 #! /usr/bin/env python3
 
-# Auto NICER V2.0
-# By: Nicholas Kuechel
-# Lisense
+# AutoNICER V2.1
+# Copyright 2021 Nicholas Kuechel
+# License
 
 import subprocess as sp
 import os
 import pandas as pd
 import time
+import numpy as np
 from astroquery.heasarc import Heasarc
 from astropy.table import Table
 from astropy.visualization import time_support
@@ -25,7 +26,7 @@ class AutoNICER(object):
 		self.ras = []
 		self.decs = []
 
-		print("############  Auto NICER V2.1  ###########")
+		print("############  Auto NICER V2.1  ############")
 		print()
 
 		self.obj = str(input("Target: "))
@@ -65,45 +66,59 @@ class AutoNICER(object):
 			xti.loc[cnt, "TIME"] = t0
 			cnt = cnt + 1
 		self.xti = xti
-
-	def sel_obs(self):
+		
+	def make_cycle(self):
+		cycle = []
+		for i in self.xti["OBSID"]:
+			cycle.append(np.floor(float(i) * 10**(-9)))
+		self.xti["Cycle#"] = cycle
+		return self.xti
+		
+	def sel_obs(self, enter):
+		self.observations.append(enter)
+		row = self.xti.loc[self.xti["OBSID"] == enter]
+		dt = row["TIME"]
+		row.reset_index(drop=True, inplace=True)
+		dt.reset_index(drop=True, inplace=True)
+		year = str(dt[0].year)
+		self.years.append(year)
+		month = dt[0].month
+		# basic if else statement to fix single digit months not having a zero out front
+		if month < 10:
+			month = "0" + str(month)
+		else:
+			month = str(month)
+		self.months.append(month)
+		self.ras.append(row["RA"][0])
+		self.decs.append(row["DEC"][0])
+		
+	def command_center(self):
 		# prompts the user to select obs to be pulled and reduced
 		while self.st == True:
-			enter = str(input("autoNICER > "))
-			if enter == "done" or enter == "Done":
+			enter = str(input("autoNICER > ")).split(" ")
+			if enter[0] == "done" or enter[0] == "Done":
 				# Command to finish selection of obs.
 				self.st = False
-			elif enter == "sel" or enter == "Sel" or enter == "SEL":
+			elif enter[0] == "sel" or enter[0] == "Sel" or enter[0] == "SEL":
 				# displays all selected observations in the cmd line
 				print("Observations Selected:")
 				for i in self.observations:
 					print(i)
-			elif enter == None or enter == "":
+			elif enter[0] == None or enter[0] == "":
 				# Error message for nothing entered in the prompt
 				print("Nothing entered...")
 				print("!!!ENTER SOMETHING!!!")
-			elif enter == "back" or enter == "Back" or enter == "BACK":
+			elif enter[0] == "back" or enter[0] == "Back" or enter[0] == "BACK":
 				# Deletes the previously entered obsid
 				print("Old Que: " + str(self.observations))
-				del observations[-1]
+				del self.observations[-1]
 				print("New Que: " + str(self.observations))
+			elif enter[0] == "cycle":
+				row = self.make_cycle().loc[self.make_cycle()["Cycle#"] == float(enter[1])]
+				for i in row["OBSID"]:
+					self.sel_obs(i)		
 			else:
-				self.observations.append(enter)
-				row = self.xti.loc[self.xti["OBSID"] == enter]
-				dt = row["TIME"]
-				row.reset_index(drop=True, inplace=True)
-				dt.reset_index(drop=True, inplace=True)
-				year = str(dt[0].year)
-				self.years.append(year)
-				month = dt[0].month
-				# basic if else statement to fix single digit months not having a zero out front
-				if month < 10:
-					month = "0" + str(month)
-				else:
-					month = str(month)
-				self.months.append(month)
-				self.ras.append(row["RA"][0])
-				self.decs.append(row["DEC"][0])
+				self.sel_obs(enter[0])
 
 
 	def nicer_compress(self):
@@ -231,7 +246,7 @@ class AutoNICER(object):
 			count = count + 1
 	def main(self):
 		self.call_nicer()
-		self.sel_obs()
+		self.command_center()
 		self.pull_reduce()
 		
 if __name__ == "__main__":
