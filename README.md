@@ -5,7 +5,7 @@ Anyone considering contribiting to this project is encouraged to do so.
 
 ## Disclaimer
 
-* To be filled in after adding LISENSE
+This software is licensed under the Apache 2.0 license, so it is free and open source for you to use.
 
 ## Pre-Requisites Libraries and Software
 
@@ -14,9 +14,10 @@ Anyone considering contribiting to this project is encouraged to do so.
 2. os
 3. pandas
 4. time
-5. astropy
-6. astroquery
-7. datetime
+5. numpy
+6. astropy
+7. astroquery
+8. datetime
 
 ### Other software
 
@@ -45,5 +46,7 @@ Anyone considering contribiting to this project is encouraged to do so.
 	- Hit enter/return after entering in the desired NICER observation ID
 	- Enter `done` in the prompt after you have entered in all your desired observation IDs
 	- Enter `sel` if you want to see the OBSIDs you have entered. Do this before you use `done`
+	- Enter `back` to delete the most recently enterd observation id
+	- Enter `cycle #` (# being the desired cycle number (1,2,3,...)) to select all observation IDs from an obsrving cycle 
 	
 7. You will see autoNICER start retrieving the data with wget, then that will be fed directly into `nicerl2`, then it will be barycenter corrected and lastly compressed in a .tar.gz format.
