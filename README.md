@@ -41,7 +41,7 @@ This software is licensed under the Apache 2.0 license, so it is free and open s
 
 	- If you selected that you want want an output que written then create a .csv file with the header `Input,Name` and input the path to that file when prompted.
 
-6. Next you will see the following prompt `Enter Observation ID or Command: `. Enter in the desired OBSID for the observation that you want retrieved and reduced. Better yet, copy the desired observation ID from the HEASARC archive and paste into the program.
+6. Next you will see the following prompt `autoNICER > `. Enter in the desired OBSID for the observation that you want retrieved and reduced. Better yet, copy the desired observation ID from the HEASARC archive and paste into the program. This will query that observation to be retrieved and processed.
 
 	- Hit enter/return after entering in the desired NICER observation ID
 	- Enter `done` in the prompt after you have entered in all your desired observation IDs
