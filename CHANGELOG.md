@@ -27,3 +27,4 @@ autoNICER is a program that allows individuals wanting to work with data from th
 - Cleaned up code, reformatting it to object oriented
 - Cleaned up prompt to look more like a command prompt
 - Added cycle selection functionality with the command "cycle [cycle #]"
+- Added rm command to remove either all selected obsid's with `rm all`, or a specific obsid with `rm obsid` where "obsid" is the observation ID we want removed from the processing queue
