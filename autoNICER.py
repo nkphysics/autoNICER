@@ -91,6 +91,16 @@ class AutoNICER(object):
 		self.months.append(month)
 		self.ras.append(row["RA"][0])
 		self.decs.append(row["DEC"][0])
+	
+	def rm_obs(self, cmd):
+		if cmd == "all":
+			self.observations.clear()
+			self.years.clear()
+			self.months.clear()
+			self.ras.clear()
+			self.decs.clear()
+		else:
+			pass
 		
 	def command_center(self):
 		# prompts the user to select obs to be pulled and reduced
@@ -116,7 +126,9 @@ class AutoNICER(object):
 			elif enter[0] == "cycle":
 				row = self.make_cycle().loc[self.make_cycle()["Cycle#"] == float(enter[1])]
 				for i in row["OBSID"]:
-					self.sel_obs(i)		
+					self.sel_obs(i)
+			elif enter[0] == "rm":
+				self.rm_obs(enter[1])
 			else:
 				self.sel_obs(enter[0])
 
