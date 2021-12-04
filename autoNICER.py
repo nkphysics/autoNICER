@@ -100,7 +100,12 @@ class AutoNICER(object):
 			self.ras.clear()
 			self.decs.clear()
 		else:
-			pass
+			n = self.observations.index(cmd)
+			del self.observations[n]
+			del self.years[n]
+			del self.months[n]
+			del self.ras[n]
+			del self.decs[n]
 		
 	def command_center(self):
 		# prompts the user to select obs to be pulled and reduced
