@@ -135,8 +135,11 @@ class AutoNICER(object):
 			elif enter[0] == "rm":
 				self.rm_obs(enter[1])
 			else:
-				self.sel_obs(enter[0])
-
+				try:
+					if int(enter[0]) > (10**8):
+						self.sel_obs(enter[0])
+				except:
+					print("Unknown Entry")
 
 	def nicer_compress(self):
 		# compresses .evt files into .tar.gz formats
