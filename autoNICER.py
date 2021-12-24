@@ -134,6 +134,8 @@ class AutoNICER(object):
 					self.sel_obs(i)
 			elif enter[0] == "rm":
 				self.rm_obs(enter[1])
+			elif enter[0] == "exit":
+				exit()
 			else:
 				try:
 					if int(enter[0]) > (10**8):
