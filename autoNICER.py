@@ -157,8 +157,8 @@ class AutoNICER(object):
             if i == "":
                 pass
             else:
-                sp.call("tar czvf " + str(i) + ".tar.gz " + str(i), shell=True)
-                sp.call("rm -r " + str(i), shell=True)
+                sp.call(f"tar czvf {i}.tar.gz {i}", shell=True)
+                sp.call(f"rm -r {i}", shell=True)
         print("")
         print("Compressing cl.evt files")
         print("----------------------------------------------------------")
@@ -170,8 +170,8 @@ class AutoNICER(object):
             if i == "":
                 pass
             else:
-                sp.call("tar czvf " + str(i) + ".tar.gz " + str(i), shell=True)
-                sp.call("rm -r " + str(i), shell=True)
+                sp.call(f"tar czvf {i}.tar.gz {i}", shell=True)
+                sp.call(f"rm -r {i}", shell=True)
 
     def pull_reduce(self):
         # Downloads the NICER data
@@ -206,7 +206,7 @@ class AutoNICER(object):
 
             # Here is the stuff for automatic tar.gz compression
             base_dir = os.getcwd()
-            os.chdir(str(obsid) + "/xti/event_cl/")
+            os.chdir(f"{obsid}/xti/event_cl/")
             if self.tar_sel == "n" or self.tar_sel == "N":
                 pass
             else:
@@ -216,13 +216,8 @@ class AutoNICER(object):
                 read_q = pd.read_csv(self.q_path)
                 newline = pd.Series(
                     data=[
-                        str(base_dir)
-                        + "/"
-                        + str(obsid)
-                        + "/xti/event_cl/bc"
-                        + str(obsid)
-                        + "_0mpu7_cl.evt",
-                        "NI" + str(obsid),
+                        f"{base_dir}/{obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt",
+                        f"NI{obsid}",
                     ],
                     index=["Input", "Name"],
                 )
