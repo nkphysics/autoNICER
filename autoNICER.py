@@ -29,9 +29,8 @@ class AutoNICER(object):
 
         print("##############  Auto NICER  ##############")
         print()
-
         self.obj = str(input("Target: "))
-
+        self.bc_sel = str(input("Apply Bary-Center Correction: [y] "))
         self.q_set = str(input("Write Output Que: [n] "))
         self.tar_sel = str(input("Compress XTI files (.tar.gz): [y] "))
         self.q_path = 0
@@ -48,7 +47,9 @@ class AutoNICER(object):
             pass
 
     def call_nicer(self):
-        # Querys the nicermastr catalog for all obs. of the specified source
+        """
+        Querys the nicermastr catalog for all observations of the specified source(self.obj)
+        """
         heasarc = Heasarc()
         quantity_support()
         time_support()
@@ -199,10 +200,13 @@ class AutoNICER(object):
             print("Downloading auxil data...")
             sp.call(f"{pull_templ}/auxil/ {end_args}", shell=True)
             sp.call(f"nicerl2 indir={obsid}/ clobber=yes", shell=True)
-            sp.call(
-                f"barycorr infile={obsid}/xti/event_cl/ni{obsid}_0mpu7_cl.evt outfile={obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt orbitfiles={obsid}/auxil/ni{obsid}.orb refframe=ICRS ra={self.ras[count]} dec={self.decs[count]} ephem=JPLEPH.430",
-                shell=True,
-            )
+            if self.bc_sel.lower() == "n":
+                pass
+            else:
+                sp.call(
+                    f"barycorr infile={obsid}/xti/event_cl/ni{obsid}_0mpu7_cl.evt outfile={obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt orbitfiles={obsid}/auxil/ni{obsid}.orb refframe=ICRS ra={self.ras[count]} dec={self.decs[count]} ephem=JPLEPH.430",
+                    shell=True,
+                )
 
             # Here is the stuff for automatic tar.gz compression
             base_dir = os.getcwd()
