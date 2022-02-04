@@ -149,11 +149,14 @@ class AutoNICER(object):
 
     def nicer_compress(self):
         """
-        compresses .evt files into .tar.gz formats
+        compresses .evt files
         """
         print("##########  .tar.gz compression  ##########")
 
         def tar_compr(file):
+            """
+            commands for a .tar.gz compression of a single file and removal of original file after compression is complete
+            """
             if file == "":
                 pass
             else:
@@ -167,6 +170,7 @@ class AutoNICER(object):
         for i in str(files.stdout).split("\n"):
             tar_compr(i)
 
+        # compression of the non-bc mpu7_cl.evt file if barycenter correction is selected
         if self.bc_sel.lower() == "n":
             pass
         else:
@@ -181,8 +185,10 @@ class AutoNICER(object):
                 tar_compr(i)
 
     def pull_reduce(self):
-        # Downloads the NICER data
-        # Puts the retrieved data through a standardized data reduction scheme
+        """
+        Downloads the NICER data
+        Puts the retrieved data through a standardized data reduction scheme
+        """
         downCommand = (
             "wget -q -nH --no-check-certificate --cut-dirs=5 -r -l0 -c -N -np -R "
             + "'index*'"
