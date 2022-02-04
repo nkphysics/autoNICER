@@ -148,31 +148,37 @@ class AutoNICER(object):
                     print("Unknown Entry")
 
     def nicer_compress(self):
-        # compresses .evt files into .tar.gz formats
+        """
+        compresses .evt files into .tar.gz formats
+        """
         print("##########  .tar.gz compression  ##########")
+
+        def tar_compr(file):
+            if file == "":
+                pass
+            else:
+                sp.call(f"tar czvf {file}.tar.gz {file}", shell=True)
+                sp.call(f"rm -r {file}", shell=True)
+
         print("Compressing ufa.evt files")
         print("----------------------------------------------------------")
         # files and loop to compress the ufa files
         files = sp.run("ls *ufa.evt", shell=True, capture_output=True, encoding="utf-8")
         for i in str(files.stdout).split("\n"):
-            if i == "":
-                pass
-            else:
-                sp.call(f"tar czvf {i}.tar.gz {i}", shell=True)
-                sp.call(f"rm -r {i}", shell=True)
-        print("")
-        print("Compressing cl.evt files")
-        print("----------------------------------------------------------")
-        # files and liip to compress the cl files
-        cl_file = sp.run(
-            "ls ni*cl.evt", shell=True, capture_output=True, encoding="utf-8"
-        )
-        for i in str(cl_file.stdout).split("\n"):
-            if i == "":
-                pass
-            else:
-                sp.call(f"tar czvf {i}.tar.gz {i}", shell=True)
-                sp.call(f"rm -r {i}", shell=True)
+            tar_compr(i)
+
+        if self.bc_sel.lower() == "n":
+            pass
+        else:
+            print("")
+            print("Compressing cl.evt files")
+            print("----------------------------------------------------------")
+            # files and liip to compress the cl files
+            cl_file = sp.run(
+                "ls ni*cl.evt", shell=True, capture_output=True, encoding="utf-8"
+            )
+            for i in str(cl_file.stdout).split("\n"):
+                tar_compr(i)
 
     def pull_reduce(self):
         # Downloads the NICER data
@@ -208,7 +214,6 @@ class AutoNICER(object):
                     shell=True,
                 )
 
-            # Here is the stuff for automatic tar.gz compression
             base_dir = os.getcwd()
             os.chdir(f"{obsid}/xti/event_cl/")
             if self.tar_sel == "n" or self.tar_sel == "N":
