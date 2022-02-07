@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "autoNICER"
+version = "1.0.0"
+description = "A program that retrieves NICER observational data sets and performs a default data reduction process on the NICER observational data"
+authors = ["Tsar Bomba Nick <njkuechel@protonmail.com>"]
+license = "Apache-2.0"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+astropy = ">4.2.1"
+astroquery = ">0.4.3"
+numpy = ">1.20.3"
+pandas = ">1.2.4"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
