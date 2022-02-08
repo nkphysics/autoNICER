@@ -14,6 +14,11 @@ pandas = ">1.2.4"
 
 [tool.poetry.dev-dependencies]
 
+[tool.poetry.plugins]
+
+[tool.poetry.plugins."autonicer"]
+".autonicer" = "autonicer:autoNICER"
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

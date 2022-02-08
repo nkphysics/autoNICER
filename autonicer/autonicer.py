@@ -247,8 +247,3 @@ class AutoNICER(object):
         self.call_nicer()
         self.command_center()
         self.pull_reduce()
-
-
-if __name__ == "__main__":
-    an = AutoNICER()
-    an.main()
