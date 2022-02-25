@@ -4,7 +4,7 @@ This project unaffiliated with the NICER team, NASA, the Goddard Space Flight Ce
 
 ## Contributing
 Anyone considering contribiting to this project is encouraged to do so.
-Constributing can be something as small as submitting issues you have found or requesting enhancements. Your feedback is valuable.
+Constributing can be something as small as submitting issues you have found or requesting enhancements. Your feedback is incredibly valuable for improving the project.
 All that is asked is that if you wish to contribute code please reach out in one way or another to nkphysics(Nick Space Cowboy), and submit a pull request.
 
 Thank you. 
@@ -15,16 +15,22 @@ This project unaffiliated with the NICER team, NASA, the Goddard Space Flight Ce
 
 ## Pre-Requisite Software
 - HEASoft v6.29c <https://heasarc.gsfc.nasa.gov/docs/software/lheasoft/>
+
+A video tutorial on how to generally install heasoft can be found here: <https://youtu.be/3-gobnSEuDo>
 - Remote CALDB <https://heasarc.gsfc.nasa.gov/docs/heasarc/caldb/caldb_remote_access.html>
+
+A video tutorial on how to setup Remote CALDB can be found here: <https://youtu.be/s01DF0cwOvM>
 - wget
 
 ## Installation
 
-For standard non-dev use cases (download the .whl) (normal pip installation coming soon):
-
-::
+For standard non-dev use cases (download the .whl or .tar.gz release)(https://github.com/nkphysics/autoNICER/releases/tag/v1.0.0) (normal pip installation coming soon maybe):
 
 	$ pip3 install autonicer-1.0.0-py3-none-any.whl
+
+OR
+
+	$ pip3 install autonicer-1.0.0.tar.gz
 
 For development cases:
 - Clone the repo
@@ -40,7 +46,7 @@ For development cases:
 
 2. Navigate to the desired directory where you want the NICER data that will be retrieved to be stored.
 
-3. Run autonicer
+3. Run autonicer by calling the local installation (i.e. `autonicer`)
 	
 4. Upon starting autoNICER you will be asked to input the  target source that you would like to query. Input the same source that you queryed in the web browser.
 
