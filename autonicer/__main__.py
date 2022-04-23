@@ -1,4 +1,5 @@
-from . import autoNICER
+from . import autonicer
 
 if __name__ == "__main__":
-	autoNICER()
+	an = autonicer.AutoNICER()
+	an.main()
