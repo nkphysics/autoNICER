@@ -1,5 +1,4 @@
-from . import autonicer
+from . import run
 
 if __name__ == "__main__":
-	an = autonicer.AutoNICER()
-	an.main()
+	run()
