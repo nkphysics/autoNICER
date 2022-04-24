@@ -1,5 +1,5 @@
 from . import autonicer
 
-def autoNICER():
+def run():
 	an = autonicer.AutoNICER()
 	an.main()

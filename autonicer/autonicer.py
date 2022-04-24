@@ -12,6 +12,7 @@ import numpy as np
 from astroquery.heasarc import Heasarc
 from astropy.table import Table
 from astropy.time import Time
+from termcolor import colored
 import datetime
 
 
@@ -24,8 +25,8 @@ class AutoNICER(object):
 		self.months = []
 		self.ras = []
 		self.decs = []
-
-		print("##############  Auto NICER  ##############")
+		
+		print(colored("##############  Auto NICER  ##############", "cyan"))
 		print()
 		self.obj = str(input("Target: "))
 		self.bc_sel = str(input("Apply Bary-Center Correction: [y] "))
@@ -109,7 +110,7 @@ class AutoNICER(object):
 	def command_center(self):
 		# prompts the user to select obs to be pulled and reduced
 		while self.st == True:
-			enter = str(input("autoNICER > ")).split(" ")
+			enter = str(input(colored("autoNICER", "blue") + " > ")).split(" ")
 			if enter[0] == "done" or enter[0] == "Done":
 				# Command to finish selection of obs.
 				self.st = False
@@ -148,7 +149,7 @@ class AutoNICER(object):
 		"""
 		compresses .evt files
 		"""
-		print("##########  .tar.gz compression  ##########")
+		print(colored("##########  .tar.gz compression  ##########", "green"))
 
 		def tar_compr(file):
 			"""
@@ -196,17 +197,17 @@ class AutoNICER(object):
 		for obsid in self.observations:
 			print("")
 			print("--------------------------------------------------------------")
-			print("             Prosessing OBSID: " + str(obsid))
+			print("             Prosessing OBSID: " + colored(str(obsid), "cyan"))
 			print("--------------------------------------------------------------")
 			pull_templ = (
 				f"{downCommand}{self.years[count]}_{self.months[count]}//{obsid}"
 			)
 			end_args = f"--show-progress --progress=bar:force"
-			print("Downloading xti data...")
+			print(colored("Downloading xti data...", "green"))
 			sp.call(f"{pull_templ}/xti/ {end_args}", shell=True)
-			print("Downloadng log data...")
+			print(colored("Downloadng log data...", "green"))
 			sp.call(f"{pull_templ}/log/ {end_args}", shell=True)
-			print("Downloading auxil data...")
+			print(colored("Downloading auxil data...", "green"))
 			sp.call(f"{pull_templ}/auxil/ {end_args}", shell=True)
 			sp.call(f"nicerl2 indir={obsid}/ clobber=yes", shell=True)
 			if self.bc_sel.lower() == "n":
