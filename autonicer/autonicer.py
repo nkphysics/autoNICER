@@ -135,7 +135,10 @@ class AutoNICER(object):
 				for i in row["OBSID"]:
 					self.sel_obs(i)
 			elif enter[0] == "rm":
-				self.rm_obs(enter[1])
+				try:
+					self.rm_obs(enter[1])
+				except:
+					print(colored("Nothing found to Remove!", "red"))
 			elif enter[0] == "exit":
 				exit()
 			else:
