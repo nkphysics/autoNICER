@@ -17,7 +17,7 @@ import datetime
 
 
 class AutoNICER(object):
-	def __init__(self):
+	def __init__(self, obj=None):
 		self.st = True
 		self.xti = 0
 		self.observations = []
@@ -28,20 +28,26 @@ class AutoNICER(object):
 		
 		print(colored("##############  Auto NICER  ##############", "cyan"))
 		print()
+		self.obj = obj
+		self.bc_sel = "y"
+		self.q_set = "n"
+		self.tar_sel = "y"
+		self.q_path = 0
+		self.q_name = 0
+		if obj==None:
+			self.startup()
+			
+	def startup(self):
 		self.obj = str(input("Target: "))
 		self.bc_sel = str(input("Apply Bary-Center Correction: [y] "))
 		self.q_set = str(input("Write Output Que: [n] "))
 		self.tar_sel = str(input("Compress XTI files (.tar.gz): [y] "))
-		self.q_path = 0
-		self.q_name = 0
 		if self.q_set == "y":
 			self.q_path = str(input("Input Que: "))
 			if self.q_path[0] == r"'" or self.que_path[0] == r'"':
 				self.q_path = self.q_path.replace("'", "")
 				self.q_path = self.q_path.replace(" ", "")
 				self.q_path = self.q_path.replace('"', "")
-			else:
-				pass
 		else:
 			pass
 
@@ -243,10 +249,4 @@ class AutoNICER(object):
 				pass
 
 			count = count + 1
-
-	def main(self):
-		self.call_nicer()
-		self.command_center()
-		self.pull_reduce()
-		
 		
