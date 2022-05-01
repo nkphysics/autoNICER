@@ -1,7 +1,7 @@
 import autonicer
 from astropy.time import Time
 import datetime
-import mock
+import numpy as np
 
 an = autonicer.AutoNICER("crab pulsar")
 
@@ -16,4 +16,14 @@ def test_call_nicer():
 	for i in an.xti["TIME"]:
 		assert isinstance(i, float) == False
 		assert isinstance(i, datetime.datetime) == True
+		
+def test_make_cycle():
+	an.make_cycle()
+	assert len(an.xti["Cycle#"]) == len(an.xti["OBSID"])
+	cnt = 0
+	for i in an.xti["OBSID"]:
+		cyc = an.xti.loc[cnt, "Cycle#"]
+		convo = float(i) * (10**(-9))
+		assert np.floor(convo) == cyc
+		cnt += 1
 		

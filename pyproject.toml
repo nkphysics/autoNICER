@@ -15,7 +15,6 @@ termcolor = "^1.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest-cov = "^3.0.0"
-mock = "^4.0.3"
 
 [tool.poetry.scripts]
 autonicer = 'autonicer:run'

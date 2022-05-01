@@ -76,7 +76,7 @@ class AutoNICER(object):
 		cycle = []
 		for i in self.xti["OBSID"]:
 			convo = np.floor(float(i) * 10 ** (-9))
-			cycle.append(convo)
+			cycle.append(int(convo))
 		self.xti["Cycle#"] = cycle
 		return self.xti
 
