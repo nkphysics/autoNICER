@@ -27,3 +27,10 @@ def test_make_cycle():
 		assert np.floor(convo) == cyc
 		cnt += 1
 		
+def test_single_sel():
+	an.command_center("1013010112")
+	assert len(an.observations) == 1
+	assert an.observations[0] == "1013010112"
+	an.command_center("rm all")
+	assert len(an.observations) == 0
+	

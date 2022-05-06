@@ -112,48 +112,58 @@ class AutoNICER(object):
 			del self.months[n]
 			del self.ras[n]
 			del self.decs[n]
-
-	def command_center(self):
-		# prompts the user to select obs to be pulled and reduced
-		while self.st == True:
-			enter = str(input(colored("autoNICER", "blue") + " > ")).split(" ")
-			if enter[0] == "done" or enter[0] == "Done":
-				# Command to finish selection of obs.
-				self.st = False
-			elif enter[0] == "sel" or enter[0] == "Sel" or enter[0] == "SEL":
-				# displays all selected observations in the cmd line
-				print("Observations Selected:")
-				for i in self.observations:
-					print(i)
-			elif enter[0] == None or enter[0] == "":
-				# Error message for nothing entered in the prompt
-				print("Nothing entered...")
-				print("!!!ENTER SOMETHING!!!")
-			elif enter[0] == "back" or enter[0] == "Back" or enter[0] == "BACK":
-				# Deletes the previously entered obsid
-				print("Old Que: " + str(self.observations))
-				del self.observations[-1]
-				print("New Que: " + str(self.observations))
-			elif enter[0] == "cycle":
-				row = self.make_cycle().loc[
-					self.make_cycle()["Cycle#"] == float(enter[1])
+			
+	def commands(self, enter):
+		if enter[0] == "done" or enter[0] == "Done":
+			# Command to finish selection of obs.
+			self.st = False
+		elif enter[0] == "sel" or enter[0] == "Sel" or enter[0] == "SEL":
+			# displays all selected observations in the cmd line
+			print("Observations Selected:")
+			for i in self.observations:
+				print(i)
+		elif enter[0] == None or enter[0] == "":
+			# Error message for nothing entered in the prompt
+			print("Nothing entered...")
+			print("!!!ENTER SOMETHING!!!")
+		elif enter[0] == "back" or enter[0] == "Back" or enter[0] == "BACK":
+			# Deletes the previously entered obsid
+			print("Old Que: " + str(self.observations))
+			del self.observations[-1]
+			print("New Que: " + str(self.observations))
+		elif enter[0] == "cycle":
+			row = self.make_cycle().loc[
+				self.make_cycle()["Cycle#"] == float(enter[1])
 				]
-				for i in row["OBSID"]:
-					self.sel_obs(i)
-			elif enter[0] == "rm":
-				try:
-					self.rm_obs(enter[1])
-				except:
-					print(colored("Nothing found to Remove!", "red"))
-			elif enter[0] == "exit":
-				exit()
+			for i in row["OBSID"]:
+				self.sel_obs(i)
+		elif enter[0] == "rm":
+			try:
+				self.rm_obs(enter[1])
+			except:
+				print(colored("Nothing found to Remove!", "red"))
+		elif enter[0] == "exit":
+			exit()
+		else:
+			try:
+				if int(enter[0]) > (10 ** 8):
+					print(f"Adding {enter[0]}")
+					self.sel_obs(enter[0])
+			except:
+				print("Unknown Entry")
+					
+	def command_center(self, enter=None):
+		# prompts the user to select obs to be pulled and reduced
+		orig_in = enter
+		self.st = True
+		while self.st == True:
+			if orig_in != None:
+				self.commands(enter.split(" "))
+				self.st = False
 			else:
-				try:
-					if int(enter[0]) > (10 ** 8):
-						self.sel_obs(enter[0])
-				except:
-					print("Unknown Entry")
-
+				enter = str(input(colored("autoNICER", "blue") + " > ")).split(" ")
+				self.commands(enter)
+			
 	def nicer_compress(self):
 		"""
 		compresses .evt files
