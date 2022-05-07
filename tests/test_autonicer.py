@@ -34,3 +34,14 @@ def test_single_sel():
 	an.command_center("rm all")
 	assert len(an.observations) == 0
 	
+def test_cycle_sel():
+	an.command_center("cycle 1")
+	assert len(an.observations) == 59
+	assert len(an.ras) == len(an.observations)
+	assert len(an.decs) == len(an.ras)
+	an.command_center("rm 1013010112")
+	assert an.observations.count("1013010112") == 0
+	assert len(an.observations) == 58
+	assert len(an.ras) == len(an.observations)
+	assert len(an.decs) == len(an.ras)
+	
