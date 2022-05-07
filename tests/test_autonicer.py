@@ -45,3 +45,11 @@ def test_cycle_sel():
 	assert len(an.ras) == len(an.observations)
 	assert len(an.decs) == len(an.ras)
 	
+def test_back():
+	last = an.observations[-1]
+	an.command_center("back")
+	assert an.observations.count(last) == 0
+	assert len(an.observations) == 57
+	assert len(an.ras) == len(an.observations)
+	assert len(an.decs) == len(an.ras)
+	

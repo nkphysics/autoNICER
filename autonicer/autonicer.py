@@ -128,9 +128,10 @@ class AutoNICER(object):
 			print("!!!ENTER SOMETHING!!!")
 		elif enter[0] == "back" or enter[0] == "Back" or enter[0] == "BACK":
 			# Deletes the previously entered obsid
-			print("Old Que: " + str(self.observations))
+			print(f"Removing {self.observations[-1]}")
 			del self.observations[-1]
-			print("New Que: " + str(self.observations))
+			del self.ras[-1]
+			del self.decs[-1]
 		elif enter[0] == "cycle":
 			row = self.make_cycle().loc[
 				self.make_cycle()["Cycle#"] == float(enter[1])
