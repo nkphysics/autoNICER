@@ -22,4 +22,4 @@ jobs:
         architecture: x64
     - run: pip install nox==2019.11.9
     - run: pip install poetry==1.1.12
-    - run: poetry run 
+    - run: poetry run pytest --cov
