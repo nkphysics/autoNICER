@@ -14,7 +14,7 @@ This software is licensed under the Apache 2.0 license, so it is free and open s
 This project unaffiliated with the NICER team, NASA, the Goddard Space Flight Center (GSFC), and HEASARC. Under no circumstances should anyone consider this project endorsed or recommended by the afformentioned agencies and organizations.
 
 ## Pre-Requisite Software
-- HEASoft v6.30 <https://heasarc.gsfc.nasa.gov/docs/software/lheasoft/>
+- HEASoft v6.29c, v6.30, v6.30.1 <https://heasarc.gsfc.nasa.gov/docs/software/lheasoft/>
 
 A video tutorial on how to generally install heasoft can be found here: <https://youtu.be/3-gobnSEuDo>
 - Remote CALDB <https://heasarc.gsfc.nasa.gov/docs/heasarc/caldb/caldb_remote_access.html>
