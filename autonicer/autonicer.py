@@ -114,10 +114,10 @@ class AutoNICER(object):
 			del self.decs[n]
 			
 	def commands(self, enter):
-		if enter[0] == "done" or enter[0] == "Done":
+		if enter[0].lower() == "done":
 			# Command to finish selection of obs.
 			self.st = False
-		elif enter[0] == "sel" or enter[0] == "Sel" or enter[0] == "SEL":
+		elif enter[0].lower() == "sel":
 			# displays all selected observations in the cmd line
 			print("Observations Selected:")
 			for i in self.observations:
@@ -126,19 +126,19 @@ class AutoNICER(object):
 			# Error message for nothing entered in the prompt
 			print("Nothing entered...")
 			print("!!!ENTER SOMETHING!!!")
-		elif enter[0] == "back" or enter[0] == "Back" or enter[0] == "BACK":
+		elif enter[0].lower() == "back":
 			# Deletes the previously entered obsid
 			print(f"Removing {self.observations[-1]}")
 			del self.observations[-1]
 			del self.ras[-1]
 			del self.decs[-1]
-		elif enter[0] == "cycle":
+		elif enter[0].lower() == "cycle":
 			row = self.make_cycle().loc[
 				self.make_cycle()["Cycle#"] == float(enter[1])
 				]
 			for i in row["OBSID"]:
 				self.sel_obs(i)
-		elif enter[0] == "rm":
+		elif enter[0].lower() == "rm":
 			try:
 				self.rm_obs(enter[1])
 			except:
