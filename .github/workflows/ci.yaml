@@ -6,7 +6,6 @@ on:
   pull_request:
     branches:
       - master
-      - testing1
 jobs:
   tests:
     runs-on: ubuntu-latest
