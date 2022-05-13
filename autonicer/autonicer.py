@@ -42,15 +42,18 @@ class AutoNICER(object):
 		self.bc_sel = str(input("Apply Bary-Center Correction: [y] "))
 		self.q_set = str(input("Write Output Que: [n] "))
 		self.tar_sel = str(input("Compress XTI files (.tar.gz): [y] "))
+		self.q_set = self.q_set.lower()
 		if self.q_set == "y":
-			self.q_path = str(input("Input Que: "))
-			if self.q_path[0] == r"'" or self.que_path[0] == r'"':
-				self.q_path = self.q_path.replace("'", "")
-				self.q_path = self.q_path.replace(" ", "")
-				self.q_path = self.q_path.replace('"', "")
-		else:
-			pass
-
+			ne = str(input("New or Add to existing: "))
+			if ne.lower() == "add":
+				self.q_path = str(input("Input Que: "))
+				if self.q_path[0] == r"'" or self.que_path[0] == r'"':
+					self.q_path = self.q_path.replace("'", "")
+					self.q_path = self.q_path.replace(" ", "")
+					self.q_path = self.q_path.replace('"', "")
+			elif ne.lower() == "new":
+				self.q_name = str(input("Name of output que file (no .csv): "))
+					
 	def call_nicer(self):
 		"""
 		Querys the nicermastr catalog for all observations of the specified source(self.obj)
@@ -201,6 +204,17 @@ class AutoNICER(object):
 			)
 			for i in str(cl_file.stdout).split("\n"):
 				tar_compr(i)
+				
+	def add2q(self, q, base_dir, obsid):
+		newline = pd.Series(
+			data=[
+				f"{base_dir}/{obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt",
+				f"NI{obsid}",
+			],
+			index=["Input", "Name"],
+		)
+		q = q.append(newline, ignore_index=True)
+		q.to_csv(self.q_path, index=False)
 
 	def pull_reduce(self):
 		"""
@@ -245,19 +259,15 @@ class AutoNICER(object):
 			else:
 				self.nicer_compress()
 			os.chdir(base_dir)
-			if self.q_set == "y":
+			if self.q_set == "y" and self.q_path != 0:
 				read_q = pd.read_csv(self.q_path)
-				newline = pd.Series(
-					data=[
-						f"{base_dir}/{obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt",
-						f"NI{obsid}",
-					],
-					index=["Input", "Name"],
-				)
-				read_q = read_q.append(newline, ignore_index=True)
-				read_q.to_csv(self.q_path, index=False)
+				self.add2q(read_q, base_dir, obsid)
+			elif self.q_set == "y" and self.q_path == 0:
+				q = pd.DataFrame({"Input":[], "Name":[]})
+				self.q_path = f"{base_dir}/{self.q_name}.csv"
+				self.add2q(q, base_dir, obsid)
 			else:
 				pass
-
+				
 			count = count + 1
 		
