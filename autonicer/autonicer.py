@@ -40,17 +40,20 @@ class AutoNICER(object):
 	def startup(self):
 		self.obj = str(input("Target: "))
 		self.bc_sel = str(input("Apply Bary-Center Correction: [y] "))
-		self.q_set = str(input("Write Output Que: [n] "))
+		self.q_set = str(input("Write Output Log: [n] "))
 		self.tar_sel = str(input("Compress XTI files (.tar.gz): [y] "))
+		self.q_set = self.q_set.lower()
 		if self.q_set == "y":
-			self.q_path = str(input("Input Que: "))
-			if self.q_path[0] == r"'" or self.que_path[0] == r'"':
-				self.q_path = self.q_path.replace("'", "")
-				self.q_path = self.q_path.replace(" ", "")
-				self.q_path = self.q_path.replace('"', "")
-		else:
-			pass
-
+			ne = str(input("New or Add to existing Log: "))
+			if ne.lower() == "add":
+				self.q_path = str(input("Input Que: "))
+				if self.q_path[0] == r"'" or self.que_path[0] == r'"':
+					self.q_path = self.q_path.replace("'", "")
+					self.q_path = self.q_path.replace(" ", "")
+					self.q_path = self.q_path.replace('"', "")
+			elif ne.lower() == "new":
+				self.q_name = str(input("Name of output log file (no .csv): "))
+					
 	def call_nicer(self):
 		"""
 		Querys the nicermastr catalog for all observations of the specified source(self.obj)
@@ -114,10 +117,10 @@ class AutoNICER(object):
 			del self.decs[n]
 			
 	def commands(self, enter):
-		if enter[0] == "done" or enter[0] == "Done":
+		if enter[0].lower() == "done":
 			# Command to finish selection of obs.
 			self.st = False
-		elif enter[0] == "sel" or enter[0] == "Sel" or enter[0] == "SEL":
+		elif enter[0].lower() == "sel":
 			# displays all selected observations in the cmd line
 			print("Observations Selected:")
 			for i in self.observations:
@@ -126,19 +129,19 @@ class AutoNICER(object):
 			# Error message for nothing entered in the prompt
 			print("Nothing entered...")
 			print("!!!ENTER SOMETHING!!!")
-		elif enter[0] == "back" or enter[0] == "Back" or enter[0] == "BACK":
+		elif enter[0].lower() == "back":
 			# Deletes the previously entered obsid
 			print(f"Removing {self.observations[-1]}")
 			del self.observations[-1]
 			del self.ras[-1]
 			del self.decs[-1]
-		elif enter[0] == "cycle":
+		elif enter[0].lower() == "cycle":
 			row = self.make_cycle().loc[
 				self.make_cycle()["Cycle#"] == float(enter[1])
 				]
 			for i in row["OBSID"]:
 				self.sel_obs(i)
-		elif enter[0] == "rm":
+		elif enter[0].lower() == "rm":
 			try:
 				self.rm_obs(enter[1])
 			except:
@@ -201,6 +204,15 @@ class AutoNICER(object):
 			)
 			for i in str(cl_file.stdout).split("\n"):
 				tar_compr(i)
+				
+	def add2q(self, q, base_dir, obsid):
+		newline = pd.DataFrame({
+				"Input":[f"{base_dir}/{obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt"],
+				"Name":[f"NI{obsid}"]
+				},
+		)
+		q = pd.concat([q, newline])
+		q.to_csv(self.q_path, index=False)
 
 	def pull_reduce(self):
 		"""
@@ -245,19 +257,15 @@ class AutoNICER(object):
 			else:
 				self.nicer_compress()
 			os.chdir(base_dir)
-			if self.q_set == "y":
+			if self.q_set == "y" and self.q_path != 0:
 				read_q = pd.read_csv(self.q_path)
-				newline = pd.Series(
-					data=[
-						f"{base_dir}/{obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt",
-						f"NI{obsid}",
-					],
-					index=["Input", "Name"],
-				)
-				read_q = read_q.append(newline, ignore_index=True)
-				read_q.to_csv(self.q_path, index=False)
+				self.add2q(read_q, base_dir, obsid)
+			elif self.q_set == "y" and self.q_path == 0:
+				q = pd.DataFrame({"Input":[], "Name":[]})
+				self.q_path = f"{base_dir}/{self.q_name}.csv"
+				self.add2q(q, base_dir, obsid)
 			else:
 				pass
-
+				
 			count = count + 1
 		
