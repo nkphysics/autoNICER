@@ -40,11 +40,11 @@ class AutoNICER(object):
 	def startup(self):
 		self.obj = str(input("Target: "))
 		self.bc_sel = str(input("Apply Bary-Center Correction: [y] "))
-		self.q_set = str(input("Write Output Que: [n] "))
+		self.q_set = str(input("Write Output Log: [n] "))
 		self.tar_sel = str(input("Compress XTI files (.tar.gz): [y] "))
 		self.q_set = self.q_set.lower()
 		if self.q_set == "y":
-			ne = str(input("New or Add to existing: "))
+			ne = str(input("New or Add to existing Log: "))
 			if ne.lower() == "add":
 				self.q_path = str(input("Input Que: "))
 				if self.q_path[0] == r"'" or self.que_path[0] == r'"':
@@ -52,7 +52,7 @@ class AutoNICER(object):
 					self.q_path = self.q_path.replace(" ", "")
 					self.q_path = self.q_path.replace('"', "")
 			elif ne.lower() == "new":
-				self.q_name = str(input("Name of output que file (no .csv): "))
+				self.q_name = str(input("Name of output log file (no .csv): "))
 					
 	def call_nicer(self):
 		"""
@@ -206,14 +206,12 @@ class AutoNICER(object):
 				tar_compr(i)
 				
 	def add2q(self, q, base_dir, obsid):
-		newline = pd.Series(
-			data=[
-				f"{base_dir}/{obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt",
-				f"NI{obsid}",
-			],
-			index=["Input", "Name"],
+		newline = pd.DataFrame({
+				"Input":[f"{base_dir}/{obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt"],
+				"Name":[f"NI{obsid}"]
+				},
 		)
-		q = q.append(newline, ignore_index=True)
+		q = pd.concat([q, newline])
 		q.to_csv(self.q_path, index=False)
 
 	def pull_reduce(self):
