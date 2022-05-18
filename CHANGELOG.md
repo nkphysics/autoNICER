@@ -20,3 +20,8 @@ autoNICER is a program that allows individuals wanting to work with data from th
 ### v1.0.0
 - Added cycle selection functionality with the command "cycle [cycle #]"
 - Added rm command to remove either all selected obsid's with `rm all`, or a specific obsid with `rm obsid` where "obsid" is the observation ID we want removed from the processing queue
+
+### v1.0.1
+- PRIMARY: Changed the way output ques/logs are written out. Users may now select if they want to add to an exisiting log file or create a new log file.
+- SECONDARY: Added testing of functions that can be tested without requiring the retrieval of NICER observational data for CI testing on the github end. 
+- Added coloration of text in the terminal when running autoNICER so a user can be more aware of the where in the procedure autoNICER is.
