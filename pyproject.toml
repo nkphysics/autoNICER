@@ -1,13 +1,14 @@
 [tool.poetry]
 name = "autonicer"
-version = "1.0.1"
+version = "1.0.2"
 description = "A program that retrieves NICER observational data sets and performs a default data reduction process on the NICER observational data"
 authors = ["Tsar Bomba Nick <njkuechel@protonmail.com>"]
 license = "Apache-2.0"
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-astropy = ">4.2.1"
+astropy = ">4.2.1,<5.1"
 astroquery = ">0.4.3"
 numpy = ">1.20.3"
 pandas = ">1.2.4"

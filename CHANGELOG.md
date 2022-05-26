@@ -25,3 +25,6 @@ autoNICER is a program that allows individuals wanting to work with data from th
 - PRIMARY: Changed the way output ques/logs are written out. Users may now select if they want to add to an exisiting log file or create a new log file.
 - SECONDARY: Added testing of functions that can be tested without requiring the retrieval of NICER observational data for CI testing on the github end. 
 - Added coloration of text in the terminal when running autoNICER so a user can be more aware of the where in the procedure autoNICER is.
+
+### v1.0.2
+- Limited the astropy dependency to versions less than v5.1 since the changes in astropy v5.1 mess with the time conversions. (Future versions will make autonicer compatable with astropy v5.1)
