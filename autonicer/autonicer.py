@@ -214,7 +214,8 @@ class AutoNICER(object):
 	def add2q(self, q, base_dir, obsid):
 		newline = pd.DataFrame({
 				"Input":[f"{base_dir}/{obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt"],
-				"Name":[f"NI{obsid}"]
+				"Name":[f"NI{obsid}"],
+				"CALDB_ver": [f"{self.caldb_ver}"]
 				},
 		)
 		q = pd.concat([q, newline])
@@ -247,6 +248,7 @@ class AutoNICER(object):
 			sp.call(f"{pull_templ}/log/ {end_args}", shell=True)
 			print(colored("Downloading auxil data...", "green"))
 			sp.call(f"{pull_templ}/auxil/ {end_args}", shell=True)
+			self.caldb_ver = self.get_caldb_ver()
 			sp.call(f"nicerl2 indir={obsid}/ clobber=yes", shell=True)
 			if self.bc_sel.lower() == "n":
 				pass
@@ -267,7 +269,7 @@ class AutoNICER(object):
 				read_q = pd.read_csv(self.q_path)
 				self.add2q(read_q, base_dir, obsid)
 			elif self.q_set == "y" and self.q_path == 0:
-				q = pd.DataFrame({"Input":[], "Name":[]})
+				q = pd.DataFrame({"Input":[], "Name":[], "CALDB_ver": []})
 				self.q_path = f"{base_dir}/{self.q_name}.csv"
 				self.add2q(q, base_dir, obsid)
 			else:
