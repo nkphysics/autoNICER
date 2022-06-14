@@ -215,7 +215,8 @@ class AutoNICER(object):
 		newline = pd.DataFrame({
 				"Input":[f"{base_dir}/{obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt"],
 				"Name":[f"NI{obsid}"],
-				"CALDB_ver": [f"{self.caldb_ver}"]
+				"CALDB_ver": [f"{self.caldb_ver}"],
+				"DateTime": [f"{datetime.datetime.now()}"]
 				},
 		)
 		q = pd.concat([q, newline])
@@ -269,7 +270,7 @@ class AutoNICER(object):
 				read_q = pd.read_csv(self.q_path)
 				self.add2q(read_q, base_dir, obsid)
 			elif self.q_set == "y" and self.q_path == 0:
-				q = pd.DataFrame({"Input":[], "Name":[], "CALDB_ver": []})
+				q = pd.DataFrame({"Input":[], "Name":[], "CALDB_ver": [], "DateTime": []})
 				self.q_path = f"{base_dir}/{self.q_name}.csv"
 				self.add2q(q, base_dir, obsid)
 			else:
