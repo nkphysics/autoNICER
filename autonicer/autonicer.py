@@ -25,6 +25,7 @@ class AutoNICER(object):
 		self.months = []
 		self.ras = []
 		self.decs = []
+		self.caldb_ver = ""
 		
 		print(colored("##############  Auto NICER  ##############", "cyan"))
 		print()
@@ -82,6 +83,11 @@ class AutoNICER(object):
 			cycle.append(int(convo))
 		self.xti["Cycle#"] = cycle
 		return self.xti
+		
+	def get_caldb_ver(self):
+		caldb = sp.run("nicaldbver", shell=True, capture_output=True, encoding="utf-8")
+		convo = str(caldb.stdout).split("\n")
+		return convo[0]
 
 	def sel_obs(self, enter):
 		self.observations.append(enter)

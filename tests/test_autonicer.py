@@ -53,3 +53,6 @@ def test_back():
 	assert len(an.ras) == len(an.observations)
 	assert len(an.decs) == len(an.ras)
 	
+def get_caldb_ver():
+	assert an.get_caldb_ver() == "xti20210707"
+	
