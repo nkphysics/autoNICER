@@ -28,3 +28,6 @@ autoNICER is a program that allows individuals wanting to work with data from th
 
 ### v1.0.2
 - Limited the astropy dependency to versions less than v5.1 since the changes in astropy v5.1 mess with the time conversions. (Future versions will make autonicer compatable with astropy v5.1)
+
+### v1.1.0
+- Added two new columns to the output log: CALDB_ver and DateTime. Also changed the "Name" column to "OBSID". This should lead to less confusion and give the user a better idea of which calibration version was used to process their data, and at what point in time they processed that data.

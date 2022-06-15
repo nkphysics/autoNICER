@@ -214,7 +214,7 @@ class AutoNICER(object):
 	def add2q(self, q, base_dir, obsid):
 		newline = pd.DataFrame({
 				"Input":[f"{base_dir}/{obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt"],
-				"Name":[f"NI{obsid}"],
+				"OBSID":[f"NI{obsid}"],
 				"CALDB_ver": [f"{self.caldb_ver}"],
 				"DateTime": [f"{datetime.datetime.now()}"]
 				},

@@ -16,6 +16,12 @@ Thank you.
 This software is licensed under the Apache 2.0 license, so it is free and open source for you to use.
 This project unaffiliated with the NICER team, NASA, the Goddard Space Flight Center (GSFC), and HEASARC. Under no circumstances should anyone consider this project endorsed or recommended by the afformentioned agencies and organizations.
 
+## Watch a video Tutorial on how to use autoNICER
+After v1.0.2 I a made a video going over autoNICER and demoing some of its functionality.
+See it here:
+<https://youtu.be/q23dvn3Da7Q>
+
+
 ## Pre-Requisite Software
 - HEASoft v6.29c, v6.30, RECOMMENDED v6.30.1 <https://heasarc.gsfc.nasa.gov/docs/software/lheasoft/>
 
@@ -27,18 +33,18 @@ A video tutorial on how to setup Remote CALDB can be found here: <https://youtu.
 
 ## Installation
 
-For standard non-dev use cases (download the .whl or .tar.gz release)(https://github.com/nkphysics/autoNICER/releases/tag/v1.0.1) (normal pip installation coming soon maybe):
+For standard non-dev use cases download via pip.
 
-	$ pip3 install autonicer-1.0.1-py3-none-any.whl
+	$ pip3 autonicer
 
 OR
 
-	$ pip3 install autonicer-1.0.1.tar.gz
+	$ pip install autonicer
 
 For development cases:
 - Clone the repo
 - cd into the project directory
-- make sure you are using poetry to help manage dependencies
+- Run `poetry install` to install the needed dependencies
 - Start working!
 
 ## Basic Usage
