@@ -35,7 +35,7 @@ A video tutorial on how to setup Remote CALDB can be found here: <https://youtu.
 
 For standard non-dev use cases download via pip.
 
-	$ pip3 autonicer
+	$ pip3 install autonicer
 
 OR
 
