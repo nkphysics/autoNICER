@@ -3,7 +3,7 @@ from astropy.time import Time
 import datetime
 import numpy as np
 
-an = autonicer.AutoNICER("crab pulsar")
+an = autonicer.AutoNICER(src="crab pulsar")
 
 def test_passin():
 	assert an.obj == "crab pulsar"

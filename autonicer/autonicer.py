@@ -17,7 +17,7 @@ import datetime
 
 
 class AutoNICER(object):
-	def __init__(self, obj=None):
+	def __init__(self, src=None, in_file=None):
 		self.st = True
 		self.xti = 0
 		self.observations = []
@@ -29,13 +29,13 @@ class AutoNICER(object):
 		
 		print(colored("##############  Auto NICER  ##############", "cyan"))
 		print()
-		self.obj = obj
+		self.obj = src
 		self.bc_sel = "y"
 		self.q_set = "n"
 		self.tar_sel = "y"
 		self.q_path = 0
 		self.q_name = 0
-		if obj==None:
+		if src==None:
 			self.startup()
 			
 	def startup(self):
