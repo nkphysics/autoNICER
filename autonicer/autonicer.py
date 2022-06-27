@@ -41,8 +41,12 @@ class AutoNICER(object):
 	def startup(self):
 		self.obj = str(input("Target: "))
 		self.bc_sel = str(input("Apply Bary-Center Correction: [y] "))
+		if self.bc_sel == "":
+			self.bc_sel = "y"
 		self.q_set = str(input("Write Output Log: [n] "))
 		self.tar_sel = str(input("Compress XTI files (.tar.gz): [y] "))
+		if self.tar_sel == "":
+			self.tar_sel = "y"
 		self.q_set = self.q_set.lower()
 		if self.q_set == "y":
 			ne = str(input("New or Add to existing Log: "))
@@ -54,6 +58,8 @@ class AutoNICER(object):
 					self.q_path = self.q_path.replace('"', "")
 			elif ne.lower() == "new":
 				self.q_name = str(input("Name of output log file (no .csv): "))
+		else:
+			self.q_set == "n"
 					
 	def call_nicer(self):
 		"""
@@ -170,7 +176,17 @@ class AutoNICER(object):
 				self.rm_obs(enter[1])
 			except:
 				print(colored("Nothing found to Remove!", "red"))
+<<<<<<< HEAD
 			return True
+=======
+		elif enter[0] == "settings":
+			print(f"Target: {self.obj}")
+			print(f"Barycenter Correction: {self.bc_sel}")
+			if self.q_set == "y":
+				print(f"Log Name: {q_name}")
+				print(f"Output Log: {self.q_set}")
+			print(f".tar.gz compresion: {self.tar_sel}")
+>>>>>>> 2d91d33 (Added settings command to display the the src, bc, log, and tar settings)
 		elif enter[0] == "exit":
 			exit()
 		else:
