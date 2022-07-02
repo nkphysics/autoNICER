@@ -159,7 +159,7 @@ class AutoNICER(object):
 				if int(enter[0]) > (10 ** 8):
 					print(f"Adding {enter[0]}")
 					self.sel_obs(enter[0])
-			except:
+			except ValueError:
 				print("Unknown Entry")
 					
 	def command_center(self, enter=None):
