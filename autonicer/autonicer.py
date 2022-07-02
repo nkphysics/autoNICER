@@ -90,6 +90,7 @@ class AutoNICER(object):
 		return convo[0]
 
 	def sel_obs(self, enter):
+		selstate = True
 		try: 
 			row = self.xti.loc[self.xti["OBSID"] == enter]
 			print(f"Adding {enter}")
@@ -108,8 +109,11 @@ class AutoNICER(object):
 			self.months.append(month)
 			self.ras.append(row["RA"][0])
 			self.decs.append(row["DEC"][0])
+			return selstate
 		except KeyError:
 			print(colored("OBSID NOT FOUND!", "red"))
+			selstate = False
+			return selstate
 
 	def rm_obs(self, cmd):
 		if cmd == "all":
@@ -135,49 +139,59 @@ class AutoNICER(object):
 			print("Observations Selected:")
 			for i in self.observations:
 				print(i)
+			return True
 		elif enter[0] == None or enter[0] == "":
 			# Error message for nothing entered in the prompt
 			print("Nothing entered...")
 			print("!!!ENTER SOMETHING!!!")
+			return True
 		elif enter[0].lower() == "back":
 			# Deletes the previously entered obsid
 			print(f"Removing {self.observations[-1]}")
 			del self.observations[-1]
 			del self.ras[-1]
 			del self.decs[-1]
+			return True
 		elif enter[0].lower() == "cycle":
 			row = self.make_cycle().loc[
 				self.make_cycle()["Cycle#"] == float(enter[1])
 				]
 			for i in row["OBSID"]:
 				self.sel_obs(i)
+			return True
 		elif enter[0].lower() == "rm":
 			try:
 				self.rm_obs(enter[1])
 			except:
 				print(colored("Nothing found to Remove!", "red"))
+			return True
 		elif enter[0] == "exit":
 			exit()
 		else:
 			try:
 				if int(enter[0]) > (10 ** 8):
-					self.sel_obs(enter[0])
+					obsst = self.sel_obs(enter[0])
+					return obsst
 				else:
 					raise ValueError
 			except ValueError:
 				print("Unknown Entry")
+				return False
 					
 	def command_center(self, enter=None):
 		# prompts the user to select obs to be pulled and reduced
 		orig_in = enter
+		cmdstate = None
 		self.st = True
 		while self.st == True:
 			if orig_in != None:
-				self.commands(enter.split(" "))
+				cmdstate = self.commands(enter.split(" "))
 				self.st = False
+				return cmdstate
 			else:
-				enter = str(input(colored("autoNICER", "blue") + " > ")).split(" ")
+				cmdstate = enter = str(input(colored("autoNICER", "blue") + " > ")).split(" ")
 				self.commands(enter)
+				return cmdstate
 			
 	def nicer_compress(self):
 		"""

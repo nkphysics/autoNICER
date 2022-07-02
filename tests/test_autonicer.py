@@ -28,10 +28,15 @@ def test_make_cycle():
 		cnt += 1
 		
 def test_single_sel():
-	an.command_center("1013010112")
+	t1 = an.command_center("1013010112")
+	assert t1 == True
 	assert len(an.observations) == 1
 	assert an.observations[0] == "1013010112"
-	an.command_center("rm all")
+	t2 = an.command_center("rm all")
+	assert t2 == True
+	assert len(an.observations) == 0
+	t3 = an.command_center("11")
+	assert t3 == False
 	assert len(an.observations) == 0
 	
 def test_cycle_sel():
