@@ -17,7 +17,7 @@ import datetime
 
 
 class AutoNICER(object):
-	def __init__(self, src=None, in_file=None):
+	def __init__(self, src=None, infile=None):
 		self.st = True
 		self.xti = 0
 		self.observations = []
@@ -26,6 +26,7 @@ class AutoNICER(object):
 		self.ras = []
 		self.decs = []
 		self.caldb_ver = ""
+		self.infile = infile
 		
 		print(colored("##############  Auto NICER  ##############", "cyan"))
 		print()
