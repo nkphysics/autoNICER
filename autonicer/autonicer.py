@@ -90,22 +90,26 @@ class AutoNICER(object):
 		return convo[0]
 
 	def sel_obs(self, enter):
-		self.observations.append(enter)
-		row = self.xti.loc[self.xti["OBSID"] == enter]
-		dt = row["TIME"]
-		row.reset_index(drop=True, inplace=True)
-		dt.reset_index(drop=True, inplace=True)
-		year = str(dt[0].year)
-		self.years.append(year)
-		month = dt[0].month
-		# basic if else statement to fix single digit months not having a zero out front
-		if month < 10:
-			month = "0" + str(month)
-		else:
-			month = str(month)
-		self.months.append(month)
-		self.ras.append(row["RA"][0])
-		self.decs.append(row["DEC"][0])
+		try: 
+			row = self.xti.loc[self.xti["OBSID"] == enter]
+			print(f"Adding {enter}")
+			self.observations.append(enter)
+			dt = row["TIME"]
+			row.reset_index(drop=True, inplace=True)
+			dt.reset_index(drop=True, inplace=True)
+			year = str(dt[0].year)
+			self.years.append(year)
+			month = dt[0].month
+			# basic if else statement to fix single digit months not having a zero out front
+			if month < 10:
+				month = "0" + str(month)
+			else:
+				month = str(month)
+			self.months.append(month)
+			self.ras.append(row["RA"][0])
+			self.decs.append(row["DEC"][0])
+		except KeyError:
+			print(colored("OBSID NOT FOUND!", "red"))
 
 	def rm_obs(self, cmd):
 		if cmd == "all":
@@ -157,8 +161,9 @@ class AutoNICER(object):
 		else:
 			try:
 				if int(enter[0]) > (10 ** 8):
-					print(f"Adding {enter[0]}")
 					self.sel_obs(enter[0])
+				else:
+					raise ValueError
 			except ValueError:
 				print("Unknown Entry")
 					
