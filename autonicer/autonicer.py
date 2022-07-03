@@ -112,6 +112,7 @@ class AutoNICER(object):
 			return selstate
 		except KeyError:
 			print(colored("OBSID NOT FOUND!", "red"))
+			del self.observations[-1]
 			selstate = False
 			return selstate
 
@@ -123,7 +124,11 @@ class AutoNICER(object):
 			self.ras.clear()
 			self.decs.clear()
 		else:
-			n = self.observations.index(cmd)
+			n = 0
+			if cmd == "back":
+				n = -1
+			else:
+				n = self.observations.index(cmd)
 			del self.observations[n]
 			del self.years[n]
 			del self.months[n]

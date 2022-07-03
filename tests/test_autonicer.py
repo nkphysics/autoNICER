@@ -27,17 +27,36 @@ def test_make_cycle():
 		assert np.floor(convo) == cyc
 		cnt += 1
 		
+def lentest(expected):
+	lens = [len(an.observations),
+			len(an.years),
+			len(an.months),
+			len(an.ras),
+			len(an.decs)]
+	for i in lens:
+		assert i == expected
+	return True
+		
 def test_single_sel():
 	t1 = an.command_center("1013010112")
 	assert t1 == True
-	assert len(an.observations) == 1
+	lt1 = lentest(1)
 	assert an.observations[0] == "1013010112"
+	
+def test_rm_all():
 	t2 = an.command_center("rm all")
 	assert t2 == True
-	assert len(an.observations) == 0
+	lentest(0)
+	
+def test_short_entry():
 	t3 = an.command_center("11")
 	assert t3 == False
-	assert len(an.observations) == 0
+	lentest(0)
+
+def test_wrong_obsid():
+	t4 = an.command_center("1013010000")
+	assert t4 == False
+	lentest(0)
 	
 def test_cycle_sel():
 	an.command_center("cycle 1")
@@ -59,5 +78,7 @@ def test_back():
 	assert len(an.decs) == len(an.ras)
 	
 def get_caldb_ver():
-	assert an.get_caldb_ver() == "xti20210707"
+	assert an.get_caldb_ver()[0] == "x"
+	assert an.get_caldb_ver()[0] == "t"
+	assert an.get_caldb_ver()[0] == "i"
 	
