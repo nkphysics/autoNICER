@@ -31,3 +31,12 @@ autoNICER is a program that allows individuals wanting to work with data from th
 
 ### v1.1.0
 - Added two new columns to the output log: CALDB_ver and DateTime. Also changed the "Name" column to "OBSID". This should lead to less confusion and give the user a better idea of which calibration version was used to process their data, and at what point in time they processed that data.
+
+### v1.1.1
+- Error handling for the done command
+- Error handling for OBSIDs that do not exist in the nicermastr query
+- Error handling for OBSID entries that are too short
+- Fixed new issue where autonicer runs pull_reduce after each command
+- Enhanced testing of commands
+- Removed pull_reduce call from the init and added it under the done command
+
