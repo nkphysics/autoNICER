@@ -73,9 +73,3 @@ def test_back():
 	assert len(an.ras) == len(an.observations)
 	assert len(an.decs) == len(an.ras)
 	
-def test_get_caldb_ver():
-	caldbver = str(an.get_caldb_ver())
-	assert caldbver[0] == "x"
-	assert caldbver[1] == "t"
-	assert caldbver[2] == "i"
-	
