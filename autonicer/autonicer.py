@@ -139,6 +139,7 @@ class AutoNICER(object):
 		if enter[0].lower() == "done":
 			# Command to finish selection of obs.
 			self.st = False
+			self.pull_reduce()
 		elif enter[0].lower() == "sel":
 			# displays all selected observations in the cmd line
 			print("Observations Selected:")
@@ -192,11 +193,9 @@ class AutoNICER(object):
 			if orig_in != None:
 				cmdstate = self.commands(enter.split(" "))
 				self.st = False
-				return cmdstate
 			else:
 				cmdstate = enter = str(input(colored("autoNICER", "blue") + " > ")).split(" ")
 				self.commands(enter)
-				return cmdstate
 			
 	def nicer_compress(self):
 		"""

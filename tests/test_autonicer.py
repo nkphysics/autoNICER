@@ -38,24 +38,20 @@ def lentest(expected):
 	return True
 		
 def test_single_sel():
-	t1 = an.command_center("1013010112")
-	assert t1 == True
+	an.command_center("1013010112")
 	lt1 = lentest(1)
 	assert an.observations[0] == "1013010112"
 	
 def test_rm_all():
-	t2 = an.command_center("rm all")
-	assert t2 == True
+	an.command_center("rm all")
 	lentest(0)
 	
 def test_short_entry():
-	t3 = an.command_center("11")
-	assert t3 == False
+	an.command_center("11")
 	lentest(0)
 
 def test_wrong_obsid():
-	t4 = an.command_center("1013010000")
-	assert t4 == False
+	an.command_center("1013010000")
 	lentest(0)
 	
 def test_cycle_sel():
