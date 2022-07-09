@@ -147,24 +147,32 @@ class AutoNICER(object):
 			# Command to finish selection of obs.
 			self.st = False
 			self.pull_reduce()
+			
 		elif enter[0].lower() == "sel":
 			# displays all selected observations in the cmd line
 			print("Observations Selected:")
 			for i in self.observations:
 				print(i)
 			return True
+			
 		elif enter[0] == None or enter[0] == "":
 			# Error message for nothing entered in the prompt
 			print("Nothing entered...")
 			print("!!!ENTER SOMETHING!!!")
 			return True
+			
 		elif enter[0].lower() == "back":
 			# Deletes the previously entered obsid
-			print(f"Removing {self.observations[-1]}")
-			del self.observations[-1]
-			del self.ras[-1]
-			del self.decs[-1]
+			try:
+				print(f"Removing {self.observations[-1]}")
+			except IndexError:
+				print(colored("Nothing found to Remove!", "red"))
+			else:
+				del self.observations[-1]
+				del self.ras[-1]
+				del self.decs[-1]
 			return True
+			
 		elif enter[0].lower() == "cycle":
 			row = self.make_cycle().loc[
 				self.make_cycle()["Cycle#"] == float(enter[1])
@@ -172,14 +180,14 @@ class AutoNICER(object):
 			for i in row["OBSID"]:
 				self.sel_obs(i)
 			return True
+			
 		elif enter[0].lower() == "rm":
 			try:
 				self.rm_obs(enter[1])
-			except:
+			except ValueError:
 				print(colored("Nothing found to Remove!", "red"))
-<<<<<<< HEAD
 			return True
-=======
+			
 		elif enter[0] == "settings":
 			print(f"Target: {self.obj}")
 			print(f"Barycenter Correction: {self.bc_sel}")
@@ -187,9 +195,10 @@ class AutoNICER(object):
 				print(f"Log Name: {q_name}")
 				print(f"Output Log: {self.q_set}")
 			print(f".tar.gz compresion: {self.tar_sel}")
->>>>>>> 2d91d33 (Added settings command to display the the src, bc, log, and tar settings)
+			
 		elif enter[0] == "exit":
 			exit()
+			
 		else:
 			try:
 				if int(enter[0]) > (10 ** 8):
