@@ -10,6 +10,7 @@ import pandas as pd
 import time
 import numpy as np
 from astroquery.heasarc import Heasarc
+from astroquery import exceptions
 from astropy.table import Table
 from astropy.time import Time
 from termcolor import colored
@@ -67,21 +68,27 @@ class AutoNICER(object):
 		Querys the nicermastr catalog for all observations of the specified source(self.obj)
 		"""
 		heasarc = Heasarc()
-		xti = heasarc.query_object(
-			self.obj, mission="nicermastr"
-		)  # calls NICER master catalogue for an input object
-		xti = Table(xti).to_pandas()
-		cnt = 0
-		for i in xti["OBSID"]:  # converts the form of the NICER obsid's to strings
-			i = i.decode()
-			xti.loc[cnt, "OBSID"] = str(i)
-			cnt = cnt + 1
-		cnt = 0
-		for i in xti["TIME"]:  # converts times from mjd to datetime format
-			t0 = Time(i, format="mjd").to_datetime()
-			xti.loc[cnt, "TIME"] = t0
-			cnt = cnt + 1
-		self.xti = xti
+		try:
+			xti = heasarc.query_object(
+				self.obj, mission="nicermastr"
+				)  # calls NICER master catalogue for an input object
+		except exceptions.InvalidQueryError:
+			print(colored(f"UNABLE TO RESOLVE {self.obj} in HEASARC!", "red"))
+			print(colored(f"Exiting ...", "red"))
+			exit()
+		else:
+			xti = Table(xti).to_pandas()
+			cnt = 0
+			for i in xti["OBSID"]:  # converts the form of the NICER obsid's to strings
+				i = i.decode()
+				xti.loc[cnt, "OBSID"] = str(i)
+				cnt = cnt + 1
+			cnt = 0
+			for i in xti["TIME"]:  # converts times from mjd to datetime format
+				t0 = Time(i, format="mjd").to_datetime()
+				xti.loc[cnt, "TIME"] = t0
+				cnt = cnt + 1
+			self.xti = xti
 
 	def make_cycle(self):
 		cycle = []
