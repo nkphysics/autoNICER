@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 # AutoNICER
-# Copyright 2021 Nicholas Kuechel
+# Copyright 2022 Nicholas Kuechel
 # License Apache 2.0
 
 import subprocess as sp
@@ -41,6 +41,9 @@ class AutoNICER(object):
 			self.startup()
 			
 	def startup(self):
+		"""
+		Prompted setting for if autonicer is just called w/ no paramerters set
+		"""
 		self.obj = str(input("Target: "))
 			
 		self.bc_sel = str(input("Apply Bary-Center Correction: [y] "))
@@ -95,6 +98,9 @@ class AutoNICER(object):
 			self.xti = xti
 
 	def make_cycle(self):
+		"""
+		Makes a Cycle# column in resulting query table from obsid table
+		"""
 		cycle = []
 		for i in self.xti["OBSID"]:
 			convo = np.floor(float(i) * 10 ** (-9))
@@ -103,11 +109,17 @@ class AutoNICER(object):
 		return self.xti
 		
 	def get_caldb_ver(self):
+		"""
+		Gets most up to nicer caldb version
+		"""
 		caldb = sp.run("nicaldbver", shell=True, capture_output=True, encoding="utf-8")
 		convo = str(caldb.stdout).split("\n")
 		return convo[0]
 
 	def sel_obs(self, enter):
+		"""
+		Selects and queues up the obsid desired
+		"""
 		selstate = True
 		dup_cnt = self.observations.count(enter)
 		if dup_cnt != 0:
@@ -139,6 +151,9 @@ class AutoNICER(object):
 				return selstate
 
 	def rm_obs(self, cmd):
+		"""
+		Manages the removal command types
+		"""
 		if cmd == "all":
 			self.observations.clear()
 			self.years.clear()
@@ -224,6 +239,9 @@ class AutoNICER(object):
 				return False
 					
 	def command_center(self, enter=None):
+		"""
+		Function to manage all the commands
+		"""
 		# prompts the user to select obs to be pulled and reduced
 		orig_in = enter
 		cmdstate = None
@@ -274,6 +292,9 @@ class AutoNICER(object):
 				tar_compr(i)
 				
 	def add2q(self, q, base_dir, obsid):
+		"""
+		Adds processed data to existing log
+		"""
 		newline = pd.DataFrame({
 				"Input":[f"{base_dir}/{obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt"],
 				"OBSID":[f"NI{obsid}"],
@@ -285,13 +306,16 @@ class AutoNICER(object):
 		q.to_csv(self.q_path, index=False)
 		
 	def reduce(self, obsid):
+		"""
+		Performs standardized data reduction scheme calling nicerl2 and barycorr if set
+		"""
 		sp.call(f"nicerl2 indir={obsid}/ clobber=yes", shell=True)
-		count = self.observations.index(obsid)
+		obsindex = self.observations.index(obsid)
 		if self.bc_sel.lower() == "n":
 			pass
 		else:
 			sp.call(
-					f"barycorr infile={obsid}/xti/event_cl/ni{obsid}_0mpu7_cl.evt outfile={obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt 						orbitfiles={obsid}/auxil/ni{obsid}.orb refframe=ICRS ra={self.ras[count]} dec={self.decs[count]} ephem=JPLEPH.430",
+					f"barycorr infile={obsid}/xti/event_cl/ni{obsid}_0mpu7_cl.evt outfile={obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt 						orbitfiles={obsid}/auxil/ni{obsid}.orb refframe=ICRS ra={self.ras[obsindex]} dec={self.decs[obsindex]} ephem=JPLEPH.430",
 					shell=True,
 				)
 
@@ -306,14 +330,14 @@ class AutoNICER(object):
 			+ " -erobots=off --retr-symlinks https://heasarc.gsfc.nasa.gov/FTP/nicer/data/obs/"
 		)
 
-		count = 0
 		for obsid in self.observations:
+			qindex = self.observations.index(obsid)
 			print("")
 			print("--------------------------------------------------------------")
 			print("             Prosessing OBSID: " + colored(str(obsid), "cyan"))
 			print("--------------------------------------------------------------")
 			pull_templ = (
-				f"{downCommand}{self.years[count]}_{self.months[count]}//{obsid}"
+				f"{downCommand}{self.years[qindex]}_{self.months[qindex]}//{obsid}"
 			)
 			end_args = f"--show-progress --progress=bar:force"
 			print(colored("Downloading xti data...", "green"))
@@ -341,6 +365,4 @@ class AutoNICER(object):
 				self.add2q(q, base_dir, obsid)
 			else:
 				pass
-				
-			count = count + 1
 		
