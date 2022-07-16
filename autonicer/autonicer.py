@@ -109,30 +109,34 @@ class AutoNICER(object):
 
 	def sel_obs(self, enter):
 		selstate = True
-		try: 
-			row = self.xti.loc[self.xti["OBSID"] == enter]
-			print(f"Adding {enter}")
-			self.observations.append(enter)
-			dt = row["TIME"]
-			row.reset_index(drop=True, inplace=True)
-			dt.reset_index(drop=True, inplace=True)
-			year = str(dt[0].year)
-			self.years.append(year)
-			month = dt[0].month
-			# basic if else statement to fix single digit months not having a zero out front
-			if month < 10:
-				month = "0" + str(month)
-			else:
-				month = str(month)
-			self.months.append(month)
-			self.ras.append(row["RA"][0])
-			self.decs.append(row["DEC"][0])
-			return selstate
-		except KeyError:
-			print(colored("OBSID NOT FOUND!", "red"))
-			del self.observations[-1]
-			selstate = False
-			return selstate
+		dup_cnt = self.observations.count(enter)
+		if dup_cnt != 0:
+			print(f"{enter} is already queued up... ignoring")
+		else:
+			try: 
+				row = self.xti.loc[self.xti["OBSID"] == enter]
+				print(f"Adding {enter}")
+				self.observations.append(enter)
+				dt = row["TIME"]
+				row.reset_index(drop=True, inplace=True)
+				dt.reset_index(drop=True, inplace=True)
+				year = str(dt[0].year)
+				self.years.append(year)
+				month = dt[0].month
+				# basic if else statement to fix single digit months not having a zero out front
+				if month < 10:
+					month = "0" + str(month)
+				else:
+					month = str(month)
+				self.months.append(month)
+				self.ras.append(row["RA"][0])
+				self.decs.append(row["DEC"][0])
+				return selstate
+			except KeyError:
+				print(colored("OBSID NOT FOUND!", "red"))
+				del self.observations[-1]
+				selstate = False
+				return selstate
 
 	def rm_obs(self, cmd):
 		if cmd == "all":
