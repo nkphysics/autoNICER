@@ -13,12 +13,13 @@ from astroquery.heasarc import Heasarc
 from astroquery import exceptions
 from astropy.table import Table
 from astropy.time import Time
+from astropy.io import fits
 from termcolor import colored
 import datetime
 
 
 class AutoNICER(object):
-	def __init__(self, src=None, infile=None):
+	def __init__(self, src=None):
 		self.st = True
 		self.xti = 0
 		self.observations = []
@@ -27,7 +28,6 @@ class AutoNICER(object):
 		self.ras = []
 		self.decs = []
 		self.caldb_ver = ""
-		self.infile = infile
 		
 		print(colored("##############  Auto NICER  ##############", "cyan"))
 		print()
@@ -37,18 +37,21 @@ class AutoNICER(object):
 		self.tar_sel = "y"
 		self.q_path = 0
 		self.q_name = 0
-		if src==None:
+		if src == None:
 			self.startup()
 			
 	def startup(self):
 		self.obj = str(input("Target: "))
+			
 		self.bc_sel = str(input("Apply Bary-Center Correction: [y] "))
 		if self.bc_sel == "":
 			self.bc_sel = "y"
+			
 		self.q_set = str(input("Write Output Log: [n] "))
 		self.tar_sel = str(input("Compress XTI files (.tar.gz): [y] "))
 		if self.tar_sel == "":
 			self.tar_sel = "y"
+			
 		self.q_set = self.q_set.lower()
 		if self.q_set == "y":
 			ne = str(input("New or Add to existing Log: "))
@@ -60,6 +63,7 @@ class AutoNICER(object):
 					self.q_path = self.q_path.replace('"', "")
 			elif ne.lower() == "new":
 				self.q_name = str(input("Name of output log file (no .csv): "))
+				
 		else:
 			self.q_set == "n"
 					
@@ -277,6 +281,17 @@ class AutoNICER(object):
 		)
 		q = pd.concat([q, newline])
 		q.to_csv(self.q_path, index=False)
+		
+	def reduce(self, obsid):
+		sp.call(f"nicerl2 indir={obsid}/ clobber=yes", shell=True)
+		count = self.observations.index(obsid)
+		if self.bc_sel.lower() == "n":
+			pass
+		else:
+			sp.call(
+					f"barycorr infile={obsid}/xti/event_cl/ni{obsid}_0mpu7_cl.evt outfile={obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt 						orbitfiles={obsid}/auxil/ni{obsid}.orb refframe=ICRS ra={self.ras[count]} dec={self.decs[count]} ephem=JPLEPH.430",
+					shell=True,
+				)
 
 	def pull_reduce(self):
 		"""
@@ -306,14 +321,7 @@ class AutoNICER(object):
 			print(colored("Downloading auxil data...", "green"))
 			sp.call(f"{pull_templ}/auxil/ {end_args}", shell=True)
 			self.caldb_ver = self.get_caldb_ver()
-			sp.call(f"nicerl2 indir={obsid}/ clobber=yes", shell=True)
-			if self.bc_sel.lower() == "n":
-				pass
-			else:
-				sp.call(
-					f"barycorr infile={obsid}/xti/event_cl/ni{obsid}_0mpu7_cl.evt outfile={obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt orbitfiles={obsid}/auxil/ni{obsid}.orb refframe=ICRS ra={self.ras[count]} dec={self.decs[count]} ephem=JPLEPH.430",
-					shell=True,
-				)
+			self.reduce(obsid)
 
 			base_dir = os.getcwd()
 			os.chdir(f"{obsid}/xti/event_cl/")
