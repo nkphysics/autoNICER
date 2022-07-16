@@ -56,20 +56,22 @@ def test_wrong_obsid():
 	
 def test_cycle_sel():
 	an.command_center("cycle 1")
-	assert len(an.observations) == 59
-	assert len(an.ras) == len(an.observations)
-	assert len(an.decs) == len(an.ras)
+	lentest(59)
+	
+def test_rm_single_sel():
 	an.command_center("rm 1013010112")
 	assert an.observations.count("1013010112") == 0
-	assert len(an.observations) == 58
-	assert len(an.ras) == len(an.observations)
-	assert len(an.decs) == len(an.ras)
+	lentest(58)
 	
 def test_back():
 	last = an.observations[-1]
 	an.command_center("back")
 	assert an.observations.count(last) == 0
-	assert len(an.observations) == 57
-	assert len(an.ras) == len(an.observations)
-	assert len(an.decs) == len(an.ras)
+	lentest(57)
+
+def test_duplicate():
+	an.command_center("cycle 1")
+	lentest(59)
+	an.command_center("1013010112")
+	lentest(59)
 	

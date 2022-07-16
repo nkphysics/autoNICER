@@ -183,9 +183,7 @@ class AutoNICER(object):
 			except IndexError:
 				print(colored("Nothing found to Remove!", "red"))
 			else:
-				del self.observations[-1]
-				del self.ras[-1]
-				del self.decs[-1]
+				self.rm_obs("back")
 			return True
 			
 		elif enter[0].lower() == "cycle":
