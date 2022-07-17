@@ -40,3 +40,9 @@ autoNICER is a program that allows individuals wanting to work with data from th
 - Enhanced testing of commands
 - Removed pull_reduce call from the init and added it under the done command
 
+### v1.1.2
+- Error handling for duplicate obsid entries from the autoNICER prompt
+- Error handling for src not resolving in HEASARC nicermastr
+- Added `settings` command to display current settings
+- Added `--src` flag that can be called from the command line to set the src with default settings (i.e. `$ autonicer --src=DESIRED-SRC`)
+
