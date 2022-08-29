@@ -46,3 +46,6 @@ autoNICER is a program that allows individuals wanting to work with data from th
 - Added `settings` command to display current settings
 - Added `--src` flag that can be called from the command line to set the src with default settings (i.e. `$ autonicer --src=DESIRED-SRC`)
 
+### v1.1.3
+- Fixed bug with single OBSID not resolving. When querying HEASARC sometimes an extra space would be in the OBSID which lead to the resolving issues.
+
