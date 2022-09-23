@@ -18,6 +18,15 @@ from termcolor import colored
 import datetime
 
 
+def get_caldb_ver():
+    """
+    Gets most up to nicer caldb version
+    """
+    caldb = sp.run("nicaldbver", shell=True, capture_output=True, encoding="utf-8")
+    convo = str(caldb.stdout).split("\n")
+    return convo[0]
+
+
 class AutoNICER(object):
     def __init__(self, src=None):
         self.st = True
@@ -107,14 +116,6 @@ class AutoNICER(object):
             cycle.append(int(convo))
         self.xti["Cycle#"] = cycle
         return self.xti
-
-    def get_caldb_ver(self):
-        """
-        Gets most up to nicer caldb version
-        """
-        caldb = sp.run("nicaldbver", shell=True, capture_output=True, encoding="utf-8")
-        convo = str(caldb.stdout).split("\n")
-        return convo[0]
 
     def sel_obs(self, enter):
         """
@@ -347,7 +348,7 @@ class AutoNICER(object):
             sp.call(f"{pull_templ}/log/ {end_args}", shell=True)
             print(colored("Downloading auxil data...", "green"))
             sp.call(f"{pull_templ}/auxil/ {end_args}", shell=True)
-            self.caldb_ver = self.get_caldb_ver()
+            self.caldb_ver = get_caldb_ver()
             self.reduce(obsid)
 
             base_dir = os.getcwd()
