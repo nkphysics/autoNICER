@@ -13,7 +13,6 @@ from astroquery.heasarc import Heasarc
 from astroquery import exceptions
 from astropy.table import Table
 from astropy.time import Time
-from astropy.io import fits
 from termcolor import colored
 import datetime
 

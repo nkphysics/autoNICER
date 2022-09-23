@@ -1,5 +1,5 @@
-from . import autonicer
 from .autonicer import AutoNICER
+from .reprocess import checkcal
 import argparse as ap
 
 
@@ -24,7 +24,7 @@ def run():
 
     args = p.parse_args()
     if args.checkcal == True:
-        print("Checkcal called")
+        checkcal()
     
     else:
         an = autonicer.AutoNICER(args.src)
