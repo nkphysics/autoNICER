@@ -24,17 +24,18 @@ def run():
     )
 
     p.add_argument(
-        "-force",
-        "--force",
-        help="Forces a reprocess if calibrations are not up to date with latest CALDB",
+        "-reprocess",
+        "--reprocess",
+        help="Engages a reprocessing of calibrations ",
         action="store_true",
         default=False,
     )
 
     args = p.parse_args()
-    if args.checkcal == True:
+    if args.checkcal == True and args.reprocess == True:
         checkcal()
-
+    elif args.checkcal == True:
+        checkcal()
     else:
         an = autonicer.AutoNICER(args.src)
         an.call_nicer()
