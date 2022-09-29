@@ -1,5 +1,5 @@
 from .autonicer import AutoNICER
-from .reprocess import checkcal
+from .reprocess import Reprocess
 import argparse as ap
 
 
@@ -33,9 +33,13 @@ def run():
 
     args = p.parse_args()
     if args.checkcal == True and args.reprocess == True:
-        checkcal()
+        check = Reprocess()
+        check.checkcal()
     elif args.checkcal == True:
-        checkcal()
+        check = Reprocess()
+        check.checkcal()
+    elif args.reprocess == True:
+        pass
     else:
         an = autonicer.AutoNICER(args.src)
         an.call_nicer()
