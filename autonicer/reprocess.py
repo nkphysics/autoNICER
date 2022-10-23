@@ -12,6 +12,9 @@ class Reprocess:
         self.last_caldb = None
         self.calstate = None
         self.src = None
+        self.obsid = None
+        self.ra = None
+        self.dec = None
         self.clevts = self.get_clevts()
         
     def get_clevts(self):
@@ -22,8 +25,19 @@ class Reprocess:
         for i in str(files.stdout).split("\n"):
             if i != "":
                 filelist.append(i)
+                if self.src == None:
+                    self.get_meta(i)
         os.chdir(base_dir)
         return filelist
+        
+    def get_meta(self, infile):
+        hdul = fits.open(infile)
+        self.src = hdul[0].header["OBJECT"]
+        self.obsid = hdul[0].header["OBS_ID"]
+        self.ra = hdul[0].header["RA_OBJ"]
+        self.dec = hdul[0].header["DEC_OBJ"]
+        hdul.close()
+        return True
 
     def checkcal(self):
         """
