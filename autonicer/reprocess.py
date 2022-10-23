@@ -30,13 +30,10 @@ class Reprocess:
         Checks the status of an existing obsid's calibrations
         """
         print(f"Latest NICER CALDB: {self.curr_caldb}")
+        print("")
         base_dir = os.getcwd()
-        os.chdir(f"xti/event_cl/")
-        files = sp.run("ls *cl.evt", shell=True, capture_output=True, encoding="utf-8")
-        for i in str(files.stdout).split("\n"):
-            if i == "":
-                break
-            print(f"Detected mpu7_cl.evt files: {i}")
+        for i in self.clevts:
+            os.chdir(f"{base_dir}/xti/event_cl/")
             hdul = fits.open(i)
             self.last_caldb = hdul[0].header["CALDBVER"]
             print(f"CALDB for {i}: {self.last_caldb}")
@@ -52,6 +49,7 @@ class Reprocess:
             print(colored(f"{premessage} Up to date with latest NICER CALDB", color))
             print("")
             hdul.close()
+        os.chdir(base_dir)
         return self.calstate
        
     def reprocess(self):
