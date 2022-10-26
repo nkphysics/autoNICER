@@ -3,12 +3,17 @@ from astropy.time import Time
 import datetime
 import numpy as np
 import os
+import pytest
+import shutil
 
-an = autonicer.AutoNICER(src="crab pulsar")
+base_dir = os.getcwd()
+os.mkdir("data")
+os.chdir("data")
+an = autonicer.AutoNICER(src="PSR_B0531+21")
 
 
 def test_passin():
-    assert an.obj == "crab pulsar"
+    assert an.obj == "PSR_B0531+21"
 
 
 def test_call_nicer():
@@ -51,19 +56,14 @@ def test_single_sel():
     assert an.observations[0] == "1013010112"
 
 
-def test_rm_all():
-    an.command_center("rm all")
-    lentest(0)
-
-
 def test_short_entry():
     an.command_center("11")
-    lentest(0)
+    lentest(1)
 
 
 def test_wrong_obsid():
     an.command_center("1013010000")
-    lentest(0)
+    lentest(1)
 
 
 def test_cycle_sel():
@@ -91,19 +91,38 @@ def test_duplicate():
     lentest(59)
 
 
-base_dir = os.getcwd()
-os.chdir("data/3013010102/")
-check = autonicer.Reprocess()
+def test_rm_all():
+    an.command_center("rm all")
+    lentest(0)
+
+
+def test_pullreduce():
+    an.command_center("3013010102")
+    an.command_center("done")
+
+
+def setup_reprocess():
+    os.chdir(f"{base_dir}/data/3013010102/")
+    return autonicer.Reprocess()
 
 
 def test_get_clevts():
+    check = setup_reprocess()
     assert len(check.clevts) == 2
     for i in check.clevts:
         assert i == "bc3013010102_0mpu7_cl.evt" or i == "ni3013010102_0mpu7_cl.evt"
+    os.chdir(f"{base_dir}data/")
 
 
 def test_getmeta():
+    check = setup_reprocess()
     assert check.obsid == "3013010102"
     assert check.src == "PSR_B0531+21"
     assert check.ra == 83.63308
     assert check.dec == 22.01449
+    os.chdir(f"{base_dir}/data/")
+
+
+def test_cleanup():
+    os.chdir(base_dir)
+    shutil.rmtree("data/")
