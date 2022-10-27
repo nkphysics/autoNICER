@@ -15,6 +15,8 @@ from astropy.table import Table
 from astropy.time import Time
 from termcolor import colored
 import datetime
+import gzip
+import shutil
 
 
 def get_caldb_ver():
@@ -220,7 +222,7 @@ class AutoNICER(object):
             if self.q_set == "y":
                 print(f"Log Name: {q_name}")
                 print(f"Output Log: {self.q_set}")
-            print(f".tar.gz compresion: {self.tar_sel}")
+            print(f".gz compresion: {self.tar_sel}")
 
         elif enter[0] == "exit":
             exit()
@@ -258,38 +260,41 @@ class AutoNICER(object):
         """
         compresses .evt files
         """
-        print(colored("##########  .tar.gz compression  ##########", "green"))
+        print(colored("##########  .gz compression  ##########", "green"))
 
-        def tar_compr(file):
+        def gz_comp(file):
             """
-            commands for a .tar.gz compression of a single file and removal of original file after compression is complete
+            .gz compression of a single file and removal of original file after compression
             """
             if file == "":
                 pass
             else:
-                sp.call(f"tar czvf {file}.tar.gz {file}", shell=True)
-                sp.call(f"rm -r {file}", shell=True)
+                with open(file, "rb") as f_in:
+                    with gzip.open(f"{file}.gz", "wb") as f_out:
+                        print(f"{file} -> {file}.gz")
+                        shutil.copyfileobj(f_in, f_out)
+                os.remove(file)
 
         print("Compressing ufa.evt files")
         print("----------------------------------------------------------")
         # files and loop to compress the ufa files
         files = sp.run("ls *ufa.evt", shell=True, capture_output=True, encoding="utf-8")
         for i in str(files.stdout).split("\n"):
-            tar_compr(i)
+            gz_comp(i)
 
         # compression of the non-bc mpu7_cl.evt file if barycenter correction is selected
-        if self.bc_sel.lower() == "n":
-            pass
-        else:
-            print("")
-            print("Compressing cl.evt files")
-            print("----------------------------------------------------------")
-            # files and liip to compress the cl files
-            cl_file = sp.run(
-                "ls ni*cl.evt", shell=True, capture_output=True, encoding="utf-8"
-            )
-            for i in str(cl_file.stdout).split("\n"):
-                tar_compr(i)
+        # if self.bc_sel.lower() == "n":
+        #     pass
+        # else:
+        #     print("")
+        #     print("Compressing cl.evt files")
+        #     print("----------------------------------------------------------")
+        # files and liip to compress the cl files
+        #     cl_file = sp.run(
+        #         "ls ni*cl.evt", shell=True, capture_output=True, encoding="utf-8"
+        #     )
+        #     for i in str(cl_file.stdout).split("\n"):
+        #         gz_comp(i)
 
     def add2q(self, q, base_dir, obsid):
         """

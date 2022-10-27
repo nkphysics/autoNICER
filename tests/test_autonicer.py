@@ -111,7 +111,7 @@ def test_get_clevts():
     assert len(check.clevts) == 2
     for i in check.clevts:
         assert i == "bc3013010102_0mpu7_cl.evt" or i == "ni3013010102_0mpu7_cl.evt"
-    os.chdir(f"{base_dir}data/")
+    os.chdir(f"{base_dir}/data/")
 
 
 def test_getmeta():
