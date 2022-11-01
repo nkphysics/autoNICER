@@ -1,4 +1,5 @@
 from .autonicer import get_caldb_ver
+from .autonicer import file_find
 import subprocess as sp
 import os
 import gzip
@@ -72,11 +73,20 @@ class Reprocess:
             hdul.close()
         os.chdir(self.base_dir)
         return self.calstate
-        
-    def uncompress(self):
+
+    def decompress(self):
         """
-        Extracts/uncompresses all files in xti/event_cl in .gz or .tar.gz formats
+        Extracts/decompresses all files in xti/event_cl in .gz or .tar.gz formats
         """
+        tars = file_find(".tar.gz")
+
+        gzs = file_find(".evt.gz")
+        for i in gzs:
+            with gzip.open(i, "rb") as gz_in:
+                fname = str(i).split(".gz")
+                with open(fname[0], "wb") as orig_out:
+                    shutil.copyfileobj(gz_in, orig_out)
+            os.remove(i)
 
     def reprocess(self):
         """

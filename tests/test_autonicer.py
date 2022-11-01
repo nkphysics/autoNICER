@@ -137,6 +137,14 @@ def test_getmeta():
     os.chdir(f"{base_dir}/data/")
 
 
+def test_decompress():
+    check = setup_reprocess()
+    check.decompress()
+    gzs = autonicer.file_find("*evt.gz")
+    assert len(gzs) == 0
+    os.chdir(f"{base_dir}/data/")
+
+
 def test_cleanup():
     os.chdir(base_dir)
     shutil.rmtree("data/")
