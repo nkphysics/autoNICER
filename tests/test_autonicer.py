@@ -5,6 +5,7 @@ import numpy as np
 import os
 import pytest
 import shutil
+import subprocess as sp
 
 base_dir = os.getcwd()
 os.mkdir("data")
@@ -38,6 +39,9 @@ def test_make_cycle():
 
 
 def lentest(expected):
+    """
+    General test of the observations, years, months, ras, and decs to ensure the expected number of parameters are stored in the respective variables of the AutoNICER object
+    """
     lens = [
         len(an.observations),
         len(an.years),
@@ -95,10 +99,30 @@ def test_rm_all():
     an.command_center("rm all")
     lentest(0)
 
+def file_existance(query):
+    """
+    General test to see if designated files exist or not
+    """
+    files = sp.run(f"ls {query}", shell=True, capture_output=True, encoding="utf-8")
+    filelist = []
+    for i in str(files.stdout).split("\n"):
+        if i != "":
+            filelist.append(i)
+    return filelist
 
 def test_pullreduce():
     an.command_center("3013010102")
     an.command_center("done")
+    os.chdir(f"{base_dir}/data/3013010102/xti/event_cl/")
+    ufa = file_existance("*ufa.evt")
+    assert len(ufa) == 0
+    ufa_gz = file_existance("*ufa.evt.gz")
+    assert len(ufa_gz) == 8
+    cl = file_existance("*cl.evt")
+    assert len(cl) == 2
+    cl_gz = file_existance("*cl.evt.gz")
+    assert len(cl_gz) == 0
+    os.chdir(f"{base_dir}")
 
 
 def setup_reprocess():
