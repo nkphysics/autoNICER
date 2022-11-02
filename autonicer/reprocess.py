@@ -79,7 +79,11 @@ class Reprocess:
         Extracts/decompresses all files in xti/event_cl in .gz or .tar.gz formats
         """
         tars = file_find(".tar.gz")
-
+        for i in tars:
+            tfile = tarfile.open(i, "r:gz")
+            tfile.extractall()
+            tfile.close()
+            os.remove(i)
         gzs = file_find(".evt.gz")
         for i in gzs:
             with gzip.open(i, "rb") as gz_in:
