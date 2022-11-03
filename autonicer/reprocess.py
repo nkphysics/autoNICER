@@ -97,7 +97,7 @@ class Reprocess:
         Reprocesses an existing dataset with latest calibrations
         """
         an = autonicer.AutoNICER(src=self.src)
-        # Extract/Decompress everything
-        # Run nicerl2
+        self.decompress()
+        an.reduce(self.obsid)
         # Run barycorr if option selected or existing bc*mpu7_cl.evt file
         # Compress if compressed before or option selected
