@@ -145,6 +145,13 @@ def test_decompress():
     os.chdir(f"{base_dir}/data/")
 
 
+def test_checkcal():
+    check = setup_reprocess()
+    check.checkcal()
+    assert check.calstate == True
+    os.chdir(f"{base_dir}/data/")
+
+
 def test_cleanup():
     os.chdir(base_dir)
     shutil.rmtree("data/")

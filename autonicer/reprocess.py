@@ -55,7 +55,7 @@ class Reprocess:
         print(f"Latest NICER CALDB: {self.curr_caldb}")
         print("")
         for i in self.clevts:
-            os.chdir(f"{base_dir}/xti/event_cl/")
+            os.chdir(f"{self.base_dir}/xti/event_cl/")
             hdul = fits.open(i)
             self.last_caldb = hdul[0].header["CALDBVER"]
             print(f"CALDB for {i}: {self.last_caldb}")
