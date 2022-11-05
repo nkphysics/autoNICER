@@ -29,7 +29,7 @@ def get_caldb_ver():
     
 def file_find(query):
     """
-    Runs a ls command and returns the contents of the command in a list
+    Runs a ls command and returns the contents in a list
     """
     files = sp.run(f"ls {query}", shell=True, capture_output=True, encoding="utf-8")
     filelist = []
@@ -40,7 +40,7 @@ def file_find(query):
 
 
 class AutoNICER(object):
-    def __init__(self, src=None):
+    def __init__(self, src=None, bc=None):
         self.st = True
         self.xti = 0
         self.observations = []
@@ -53,43 +53,50 @@ class AutoNICER(object):
         print(colored("##############  Auto NICER  ##############", "cyan"))
         print()
         self.obj = src
-        self.bc_sel = "y"
+        self.bc_sel = bc
         self.q_set = "n"
         self.tar_sel = "y"
         self.q_path = 0
         self.q_name = 0
-        if src == None:
-            self.startup()
+        self.startup()
+        
 
     def startup(self):
         """
         Prompted setting for if autonicer is just called w/ no paramerters set
         """
-        self.obj = str(input("Target: "))
+        def null_parse(var):
+            if var == "" or var is True:
+                var = "y"
+        
+        if self.bc_sel is None and self.obj is None:
+            self.obj = str(input("Target: "))
+            self.bc_sel = str(input("Apply Bary-Center Correction: [y] "))
+            self.q_set = str(input("Write Output Log: [n] "))
+            self.tar_sel = str(input("Compress XTI files (.tar.gz): [y] "))
+            if self.tar_sel == "":
+                self.tar_sel = "y"
 
-        self.bc_sel = str(input("Apply Bary-Center Correction: [y] "))
-        if self.bc_sel == "":
-            self.bc_sel = "y"
+            self.q_set = self.q_set.lower()
+            if self.q_set == "y":
+                ne = str(input("New or Add to existing Log: "))
+                if ne.lower() == "add":
+                    self.q_path = str(input("Input Que: "))
+                    if self.q_path[0] == r"'" or self.que_path[0] == r'"':
+                        self.q_path = self.q_path.replace("'", "")
+                        self.q_path = self.q_path.replace(" ", "")
+                        self.q_path = self.q_path.replace('"', "")
+                elif ne.lower() == "new":
+                    self.q_name = str(input("Name of output log file (no .csv): "))
 
-        self.q_set = str(input("Write Output Log: [n] "))
-        self.tar_sel = str(input("Compress XTI files (.tar.gz): [y] "))
-        if self.tar_sel == "":
-            self.tar_sel = "y"
-
-        self.q_set = self.q_set.lower()
-        if self.q_set == "y":
-            ne = str(input("New or Add to existing Log: "))
-            if ne.lower() == "add":
-                self.q_path = str(input("Input Que: "))
-                if self.q_path[0] == r"'" or self.que_path[0] == r'"':
-                    self.q_path = self.q_path.replace("'", "")
-                    self.q_path = self.q_path.replace(" ", "")
-                    self.q_path = self.q_path.replace('"', "")
-            elif ne.lower() == "new":
-                self.q_name = str(input("Name of output log file (no .csv): "))
-
+            else:
+                self.q_set = "n"
+            null_parse(self.bc_sel)
+            
         else:
-            self.q_set == "n"
+            self.bc_sel = "y"
+            self.tar_sel = "y"
+            self.q_set = "n"
 
     def call_nicer(self):
         """
@@ -315,7 +322,7 @@ class AutoNICER(object):
             {
                 "Input": [f"{base_dir}/{obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt"],
                 "OBSID": [f"NI{obsid}"],
-                "CALDB_ver": [f"{self.caldb_ver}"],
+                "CALDB": [f"{self.caldb_ver}"],
                 "DateTime": [f"{datetime.datetime.now()}"],
             },
         )

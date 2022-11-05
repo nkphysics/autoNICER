@@ -32,6 +32,14 @@ def run():
         action="store_true",
         default=False,
     )
+    
+    p.add_argument(
+        "-bc",
+        "--bc",
+        help="Engages option for a barycenter correction in data reduction procedure",
+        action="store_true",
+        default=None,
+    )
 
     args = p.parse_args()
     if args.checkcal == True and args.reprocess == True:
@@ -43,6 +51,6 @@ def run():
     elif args.reprocess == True:
         pass
     else:
-        an = autonicer.AutoNICER(args.src)
+        an = autonicer.AutoNICER(args.src, args.bc)
         an.call_nicer()
         an.command_center()
