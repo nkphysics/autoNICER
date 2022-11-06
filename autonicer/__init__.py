@@ -32,7 +32,7 @@ def run():
         action="store_true",
         default=False,
     )
-    
+
     p.add_argument(
         "-bc",
         "--bc",
@@ -41,15 +41,21 @@ def run():
         default=None,
     )
 
+    p.add_argument(
+        "-compress",
+        "--compress",
+        help="Engages option for .gz compression of ufa.evt files",
+        action="store_true",
+        default=None,
+    )
+
     args = p.parse_args()
-    if args.checkcal == True and args.reprocess == True:
+    if args.checkcal is True or args.reprocess is True:
         check = Reprocess()
-        check.checkcal()
-    elif args.checkcal == True:
-        check = Reprocess()
-        check.checkcal()
-    elif args.reprocess == True:
-        pass
+        if args.checkcal is True:
+            check.checkcal()
+        if args.reprocess == True:
+            check.reprocess()
     else:
         an = autonicer.AutoNICER(args.src, args.bc)
         an.call_nicer()

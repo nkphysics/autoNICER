@@ -26,7 +26,8 @@ def get_caldb_ver():
     caldb = sp.run("nicaldbver", shell=True, capture_output=True, encoding="utf-8")
     convo = str(caldb.stdout).split("\n")
     return convo[0]
-    
+
+
 def file_find(query):
     """
     Runs a ls command and returns the contents in a list
@@ -40,7 +41,7 @@ def file_find(query):
 
 
 class AutoNICER(object):
-    def __init__(self, src=None, bc=None):
+    def __init__(self, src=None, bc=None, comp=None):
         self.st = True
         self.xti = 0
         self.observations = []
@@ -55,20 +56,20 @@ class AutoNICER(object):
         self.obj = src
         self.bc_sel = bc
         self.q_set = "n"
-        self.tar_sel = "y"
+        self.tar_sel = comp
         self.q_path = 0
         self.q_name = 0
         self.startup()
-        
 
     def startup(self):
         """
         Prompted setting for if autonicer is just called w/ no paramerters set
         """
+
         def null_parse(var):
             if var == "" or var is True:
                 var = "y"
-        
+
         if self.bc_sel is None and self.obj is None:
             self.obj = str(input("Target: "))
             self.bc_sel = str(input("Apply Bary-Center Correction: [y] "))
@@ -92,7 +93,8 @@ class AutoNICER(object):
             else:
                 self.q_set = "n"
             null_parse(self.bc_sel)
-            
+            null_parse(self.tar_sel)
+
         else:
             self.bc_sel = "y"
             self.tar_sel = "y"
