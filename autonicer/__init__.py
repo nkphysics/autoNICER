@@ -57,6 +57,6 @@ def run():
         if args.reprocess == True:
             check.reprocess()
     else:
-        an = autonicer.AutoNICER(args.src, args.bc)
+        an = autonicer.AutoNICER(args.src, args.bc, args.compress)
         an.call_nicer()
         an.command_center()

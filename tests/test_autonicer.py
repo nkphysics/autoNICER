@@ -10,7 +10,7 @@ import subprocess as sp
 base_dir = os.getcwd()
 os.mkdir("data")
 os.chdir("data")
-an = autonicer.AutoNICER(src="PSR_B0531+21")
+an = autonicer.AutoNICER(src="PSR_B0531+21", bc=True, comp=True)
 
 
 def test_passin():
@@ -98,8 +98,8 @@ def test_duplicate():
 def test_rm_all():
     an.command_center("rm all")
     lentest(0)
-    
-    
+
+
 def test_get_caldbver():
     assert autonicer.get_caldb_ver() == "xti20221001"
 

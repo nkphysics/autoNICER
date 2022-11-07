@@ -69,15 +69,20 @@ class AutoNICER(object):
         def null_parse(var):
             if var == "" or var is True:
                 var = "y"
+            return var
 
-        if self.bc_sel is None and self.obj is None:
+        logq = False
+        if self.obj is None and self.bc is None and self.compress is None:
+            logq = True
+        if self.obj is None:
             self.obj = str(input("Target: "))
+        if self.bc_sel is None:
             self.bc_sel = str(input("Apply Bary-Center Correction: [y] "))
             self.q_set = str(input("Write Output Log: [n] "))
+        if self.tar_sel is None:
             self.tar_sel = str(input("Compress XTI files (.tar.gz): [y] "))
-            if self.tar_sel == "":
-                self.tar_sel = "y"
-
+        if logq is True:
+            self.q_set = str(input("Write Output Log: [n] "))
             self.q_set = self.q_set.lower()
             if self.q_set == "y":
                 ne = str(input("New or Add to existing Log: "))
@@ -90,15 +95,10 @@ class AutoNICER(object):
                 elif ne.lower() == "new":
                     self.q_name = str(input("Name of output log file (no .csv): "))
 
-            else:
-                self.q_set = "n"
-            null_parse(self.bc_sel)
-            null_parse(self.tar_sel)
-
-        else:
-            self.bc_sel = "y"
-            self.tar_sel = "y"
-            self.q_set = "n"
+                else:
+                    self.q_set = "n"
+        self.bc_sel = null_parse(self.bc_sel)
+        self.tar_sel = null_parse(self.tar_sel)
 
     def call_nicer(self):
         """
