@@ -55,7 +55,7 @@ def run():
         if args.checkcal is True:
             check.checkcal()
         if args.reprocess == True:
-            check.reprocess()
+            check.reprocess(args.bc, args.compress)
     else:
         an = autonicer.AutoNICER(args.src, args.bc, args.compress)
         an.call_nicer()

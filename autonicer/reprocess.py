@@ -2,6 +2,7 @@ from .autonicer import get_caldb_ver
 from .autonicer import file_find
 import subprocess as sp
 import os
+import shutil
 import gzip
 import tarfile as tar
 from astropy.io import fits
@@ -19,6 +20,8 @@ class Reprocess:
         self.obsid = None
         self.ra = None
         self.dec = None
+        self.bc_det = False
+        self.comp_det = False
         self.clevts = self.get_clevts()
 
     def get_clevts(self):
@@ -78,26 +81,34 @@ class Reprocess:
         """
         Extracts/decompresses all files in xti/event_cl in .gz or .tar.gz formats
         """
-        tars = file_find(".tar.gz")
-        for i in tars:
-            tfile = tarfile.open(i, "r:gz")
-            tfile.extractall()
-            tfile.close()
-            os.remove(i)
-        gzs = file_find(".evt.gz")
+        print(colored(f"######## Decompressing {self.obsid} ########", "green"))
+        os.chdir(f"xti/event_cl/")
+        gzs = file_find("*.evt.gz")
         for i in gzs:
             with gzip.open(i, "rb") as gz_in:
                 fname = str(i).split(".gz")
                 with open(fname[0], "wb") as orig_out:
+                    print(f"{i} -> {fname[0]}")
                     shutil.copyfileobj(gz_in, orig_out)
             os.remove(i)
+        tars = file_find("*.tar.gz")
+        for i in tars:
+            tfile = tarfile.open(i, "r:gz")
+            print(f"Extracting {i}")
+            tfile.extractall()
+            tfile.close()
+            os.remove(i)
+        if len(gzs) > 0 or len(tars) > 0:
+            print("Engaged")
+            self.comp_det = True
+        return self.comp_det
 
-    def reprocess(self):
+    def reprocess(self, bc=None, compress=None):
         """
         Reprocesses an existing dataset with latest calibrations
         """
-        an = autonicer.AutoNICER(src=self.src)
         self.decompress()
+        an = autonicer.AutoNICER(src=self.src)
         an.reduce(self.obsid)
         # Run barycorr if option selected or existing bc*mpu7_cl.evt file
         # Compress if compressed before or option selected

@@ -143,12 +143,13 @@ def test_getmeta():
 
 def test_decompress():
     check = setup_reprocess()
-    check.decompress()
+    comp_det = check.decompress()
+    assert comp_det is True
     gzs = autonicer.file_find("*evt.gz")
     assert len(gzs) == 0
     os.chdir(f"{base_dir}/data/")
-
-
+    
+    
 def test_checkcal():
     check = setup_reprocess()
     check.checkcal()
