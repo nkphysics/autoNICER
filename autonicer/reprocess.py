@@ -36,6 +36,8 @@ class Reprocess:
                 filelist.append(i)
                 if self.src == None:
                     self.get_meta(i)
+            if i == f"bc{self.obsid}_0mpu7_cl.evt":
+                self.bc_det = True
         os.chdir(self.base_dir)
         return filelist
 
@@ -99,7 +101,6 @@ class Reprocess:
             tfile.close()
             os.remove(i)
         if len(gzs) > 0 or len(tars) > 0:
-            print("Engaged")
             self.comp_det = True
         return self.comp_det
 
