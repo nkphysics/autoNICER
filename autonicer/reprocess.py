@@ -1,5 +1,4 @@
-from .autonicer import get_caldb_ver
-from .autonicer import file_find
+import autonicer
 import subprocess as sp
 import os
 import shutil
@@ -7,12 +6,11 @@ import gzip
 import tarfile as tar
 from astropy.io import fits
 from termcolor import colored
-from .autonicer import AutoNICER
 
 
 class Reprocess:
     def __init__(self):
-        self.curr_caldb = get_caldb_ver()
+        self.curr_caldb = autonicer.get_caldb_ver()
         self.base_dir = os.getcwd()
         self.last_caldb = None
         self.calstate = None
@@ -84,8 +82,8 @@ class Reprocess:
         Extracts/decompresses all files in xti/event_cl in .gz or .tar.gz formats
         """
         print(colored(f"######## Decompressing {self.obsid} ########", "green"))
-        os.chdir(f"xti/event_cl/")
-        gzs = file_find("*.evt.gz")
+        os.chdir(f"{self.base_dir}/xti/event_cl/")
+        gzs = autonicer.file_find("*.evt.gz")
         for i in gzs:
             with gzip.open(i, "rb") as gz_in:
                 fname = str(i).split(".gz")
@@ -93,7 +91,7 @@ class Reprocess:
                     print(f"{i} -> {fname[0]}")
                     shutil.copyfileobj(gz_in, orig_out)
             os.remove(i)
-        tars = file_find("*.tar.gz")
+        tars = autonicer.file_find("*.tar.gz")
         for i in tars:
             tfile = tarfile.open(i, "r:gz")
             print(f"Extracting {i}")
@@ -102,6 +100,7 @@ class Reprocess:
             os.remove(i)
         if len(gzs) > 0 or len(tars) > 0:
             self.comp_det = True
+        os.chdir(self.base_dir)
         return self.comp_det
 
     def reprocess(self, bc=None, compress=None):
@@ -109,7 +108,15 @@ class Reprocess:
         Reprocesses an existing dataset with latest calibrations
         """
         self.decompress()
-        an = autonicer.AutoNICER(src=self.src)
+        if bc is True:
+            self.bc_det = bc
+        an = autonicer.AutoNICER(src=self.src, bc=self.bc_det, comp=False)
+        an.observations.append(self.obsid)
+        an.ras.append(self.ra)
+        an.decs.append(self.dec)
+        proc_dir = self.base_dir.split(f"{self.obsid}")
+        os.chdir(proc_dir[0])
         an.reduce(self.obsid)
-        # Run barycorr if option selected or existing bc*mpu7_cl.evt file
-        # Compress if compressed before or option selected
+        os.chdir(f"{self.base_dir}/xti/event_cl/")
+        if compress is True or self.comp_det is True:
+            an.nicer_compress()

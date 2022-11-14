@@ -341,7 +341,7 @@ class AutoNICER(object):
             pass
         else:
             sp.call(
-                f"barycorr infile={obsid}/xti/event_cl/ni{obsid}_0mpu7_cl.evt outfile={obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt orbitfiles={obsid}/auxil/ni{obsid}.orb refframe=ICRS ra={self.ras[obsindex]} dec={self.decs[obsindex]} ephem=JPLEPH.430",
+                f"barycorr infile={obsid}/xti/event_cl/ni{obsid}_0mpu7_cl.evt outfile={obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt orbitfiles={obsid}/auxil/ni{obsid}.orb refframe=ICRS ra={self.ras[obsindex]} dec={self.decs[obsindex]} ephem=JPLEPH.430 clobber=yes",
                 shell=True,
             )
 

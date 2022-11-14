@@ -1,5 +1,6 @@
 import autonicer
 from astropy.time import Time
+from astropy.io import fits
 import datetime
 import numpy as np
 import os
@@ -149,13 +150,33 @@ def test_decompress():
     gzs = autonicer.file_find("*evt.gz")
     assert len(gzs) == 0
     os.chdir(f"{base_dir}/data/")
-    
-    
+
+
 def test_checkcal():
     check = setup_reprocess()
     check.checkcal()
     assert check.calstate == True
     os.chdir(f"{base_dir}/data/")
+
+
+def get_processed_time(file):
+    hdul = fits.open(file)
+    dt_created = hdul[1].header["DATE"]
+    hdul.close()
+    return dt_created
+
+
+def test_reprocess():
+    check = setup_reprocess()
+    os.chdir(f"{check.base_dir}/xti/event_cl/")
+    pbc_dt_str = get_processed_time(f"bc{check.obsid}_0mpu7_cl.evt")
+    pre_bc_dt = datetime.datetime.strptime(pbc_dt_str, "%Y-%m-%dT%H:%M:%S")
+    check.reprocess()
+    os.chdir(f"{check.base_dir}/xti/event_cl/")
+    pobc_dt_str = get_processed_time(f"bc{check.obsid}_0mpu7_cl.evt")
+    post_bc_dt = datetime.datetime.strptime(pobc_dt_str, "%Y-%m-%dT%H:%M:%S")
+    # assert post_cl_dt > pre_cl_dt
+    assert post_bc_dt > pre_bc_dt
 
 
 def test_cleanup():
