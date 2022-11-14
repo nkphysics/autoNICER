@@ -72,15 +72,14 @@ class AutoNICER(object):
             return var
 
         logq = False
-        if self.obj is None and self.bc is None and self.compress is None:
+        if self.obj is None and self.bc_sel is None and self.tar_sel is None:
             logq = True
         if self.obj is None:
             self.obj = str(input("Target: "))
         if self.bc_sel is None:
             self.bc_sel = str(input("Apply Bary-Center Correction: [y] "))
-            self.q_set = str(input("Write Output Log: [n] "))
         if self.tar_sel is None:
-            self.tar_sel = str(input("Compress XTI files (.tar.gz): [y] "))
+            self.tar_sel = str(input("Compress XTI files (.gz): [y] "))
         if logq is True:
             self.q_set = str(input("Write Output Log: [n] "))
             self.q_set = self.q_set.lower()
