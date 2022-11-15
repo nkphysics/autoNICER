@@ -107,6 +107,9 @@ class Reprocess:
         """
         Reprocesses an existing dataset with latest calibrations
         """
+        if self.calstate is True:
+            print(f"----------  Passing Reprocess of {self.obsid}  ----------")
+            exit()
         self.decompress()
         if bc is True:
             self.bc_det = bc
