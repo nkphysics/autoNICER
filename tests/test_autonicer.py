@@ -16,6 +16,8 @@ an = autonicer.AutoNICER(src="PSR_B0531+21", bc=True, comp=True)
 
 def test_passin():
     assert an.obj == "PSR_B0531+21"
+    assert an.bc_sel is "y"
+    assert an.tar_sel is "y"
 
 
 def test_call_nicer():
