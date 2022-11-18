@@ -5,7 +5,7 @@ from .reprocess import Reprocess
 import argparse as ap
 
 
-def run():
+def run(args=None):
     p = ap.ArgumentParser(
         description="A program for piplining NICER data reduction. Run by just typing autonicer."
     )
@@ -49,14 +49,14 @@ def run():
         default=None,
     )
 
-    args = p.parse_args()
-    if args.checkcal is True or args.reprocess is True:
+    argp = p.parse_args(args)
+    if argp.checkcal is True or argp.reprocess is True:
         check = Reprocess()
-        if args.checkcal is True:
+        if argp.checkcal is True:
             check.checkcal()
-        if args.reprocess == True:
-            check.reprocess(args.bc, args.compress)
+        if argp.reprocess == True:
+            check.reprocess(argp.bc, argp.compress)
     else:
-        an = autonicer.AutoNICER(args.src, args.bc, args.compress)
+        an = autonicer.AutoNICER(argp.src, argp.bc, argp.compress)
         an.call_nicer()
         an.command_center()
