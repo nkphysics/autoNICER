@@ -64,6 +64,17 @@ def test_single_sel():
     assert an.observations[0] == "1013010112"
 
 
+def test_showsettings(capsys):
+    an.command_center("settings")
+    target = f"Target: {an.obj}"
+    bc = f"Barycenter Correction: {an.bc_sel}"
+    comp = f".gz compresion: {an.tar_sel}"
+    settings = [target, bc, comp]
+    out, err = capsys.readouterr()
+    for i in settings:
+        assert i in out
+
+
 def test_short_entry():
     an.command_center("11")
     lentest(1)
