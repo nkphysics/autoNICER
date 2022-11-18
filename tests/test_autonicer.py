@@ -7,6 +7,7 @@ import os
 import pytest
 import shutil
 import subprocess as sp
+import tarfile
 
 base_dir = os.getcwd()
 os.mkdir("data")
@@ -121,6 +122,7 @@ def test_pullreduce():
     assert len(cl_gz) == 0
     os.chdir(f"{base_dir}")
 
+
 @pytest.fixture
 def setup_reprocess():
     os.chdir(f"{base_dir}/data/3013010102/")
@@ -146,13 +148,18 @@ def test_getmeta(setup_reprocess):
 
 
 def test_decompress(setup_reprocess):
-    check = setup_reprocess
-    with open('dummy_tar.tar.gz', 'w') as dummy_tar:
+    os.chdir(f"{base_dir}/data/3013010102/xti/event_cl/")
+    with open("dummy.txt", "w") as dummy:
         pass
+    with tarfile.open("dummy.tar.gz", "w:gz") as tar:
+        tar.add("dummy.txt")
+    check = setup_reprocess
     comp_det = check.decompress()
     assert comp_det is True
     gzs = autonicer.file_find("*evt.gz")
+    tars = autonicer.file_find("*.tar.gz")
     assert len(gzs) == 0
+    assert len(tars) == 0
     os.chdir(f"{base_dir}/data/")
 
 

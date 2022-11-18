@@ -3,7 +3,7 @@ import subprocess as sp
 import os
 import shutil
 import gzip
-import tarfile as tar
+import tarfile
 from astropy.io import fits
 from termcolor import colored
 
