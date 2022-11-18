@@ -16,8 +16,8 @@ an = autonicer.AutoNICER(src="PSR_B0531+21", bc=True, comp=True)
 
 def test_passin():
     assert an.obj == "PSR_B0531+21"
-    assert an.bc_sel is "y"
-    assert an.tar_sel is "y"
+    assert an.bc_sel == "y"
+    assert an.tar_sel == "y"
 
 
 def test_call_nicer():
@@ -121,14 +121,14 @@ def test_pullreduce():
     assert len(cl_gz) == 0
     os.chdir(f"{base_dir}")
 
-
+@pytest.fixture
 def setup_reprocess():
     os.chdir(f"{base_dir}/data/3013010102/")
     return autonicer.Reprocess()
 
 
-def test_get_clevts():
-    check = setup_reprocess()
+def test_get_clevts(setup_reprocess):
+    check = setup_reprocess
     assert len(check.clevts) == 2
     for i in check.clevts:
         assert i == "bc3013010102_0mpu7_cl.evt" or i == "ni3013010102_0mpu7_cl.evt"
@@ -136,8 +136,8 @@ def test_get_clevts():
     os.chdir(f"{base_dir}/data/")
 
 
-def test_getmeta():
-    check = setup_reprocess()
+def test_getmeta(setup_reprocess):
+    check = setup_reprocess
     assert check.obsid == "3013010102"
     assert check.src == "PSR_B0531+21"
     assert check.ra == 83.63308
@@ -145,8 +145,10 @@ def test_getmeta():
     os.chdir(f"{base_dir}/data/")
 
 
-def test_decompress():
-    check = setup_reprocess()
+def test_decompress(setup_reprocess):
+    check = setup_reprocess
+    with open('dummy_tar.tar.gz', 'w') as dummy_tar:
+        pass
     comp_det = check.decompress()
     assert comp_det is True
     gzs = autonicer.file_find("*evt.gz")
@@ -154,8 +156,8 @@ def test_decompress():
     os.chdir(f"{base_dir}/data/")
 
 
-def test_checkcal():
-    check = setup_reprocess()
+def test_checkcal(setup_reprocess):
+    check = setup_reprocess
     check.checkcal()
     assert check.calstate == True
     os.chdir(f"{base_dir}/data/")
@@ -168,8 +170,8 @@ def get_processed_time(file):
     return dt_created
 
 
-def test_reprocess():
-    check = setup_reprocess()
+def test_reprocess(setup_reprocess):
+    check = setup_reprocess
     os.chdir(f"{check.base_dir}/xti/event_cl/")
     pbc_dt_str = get_processed_time(f"bc{check.obsid}_0mpu7_cl.evt")
     pre_bc_dt = datetime.datetime.strptime(pbc_dt_str, "%Y-%m-%dT%H:%M:%S")
