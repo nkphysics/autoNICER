@@ -198,8 +198,18 @@ def test_reprocess(setup_reprocess):
     os.chdir(f"{check.base_dir}/xti/event_cl/")
     pobc_dt_str = get_processed_time(f"bc{check.obsid}_0mpu7_cl.evt")
     post_bc_dt = datetime.datetime.strptime(pobc_dt_str, "%Y-%m-%dT%H:%M:%S")
-    # assert post_cl_dt > pre_cl_dt
     assert post_bc_dt > pre_bc_dt
+
+
+def test_checkcal_reprocess(capsys):
+    try:
+        os.chdir(f"{base_dir}/data/3013010102")
+        autonicer.run(["--checkcal", "--reprocess", "--bc", "--compress"])
+        out, err = capsys.readouterr()
+        passing = f"----------  Passing Reprocess of {self.obsid}  ----------"
+        assert passing in out
+    except SystemExit:
+        pass
 
 
 def test_cleanup():

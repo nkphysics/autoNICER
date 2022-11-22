@@ -6,6 +6,7 @@ import gzip
 import tarfile
 from astropy.io import fits
 from termcolor import colored
+import sys
 
 
 class Reprocess:
@@ -109,7 +110,7 @@ class Reprocess:
         """
         if self.calstate is True:
             print(f"----------  Passing Reprocess of {self.obsid}  ----------")
-            exit()
+            sys.exit()
         self.decompress()
         if bc is True:
             self.bc_det = bc
