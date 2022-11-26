@@ -205,11 +205,11 @@ def test_checkcal_reprocess(capsys):
     try:
         os.chdir(f"{base_dir}/data/3013010102")
         autonicer.run(["--checkcal", "--reprocess", "--bc", "--compress"])
-        out, err = capsys.readouterr()
-        passing = f"----------  Passing Reprocess of {self.obsid}  ----------"
-        assert passing in out
     except SystemExit:
         pass
+    out, err = capsys.readouterr()
+    passing = f"----------  Passing Reprocess of 3013010102  ----------"
+    assert passing in out
 
 
 def test_cleanup():
