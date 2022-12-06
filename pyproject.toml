@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-astropy = ">4.2.1,<5.1"
+astropy = ">4.2.1"
 astroquery = ">0.4.3"
 numpy = ">1.20.3"
 pandas = ">1.2.4"
