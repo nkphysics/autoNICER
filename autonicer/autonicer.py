@@ -17,7 +17,8 @@ from termcolor import colored
 import datetime
 import gzip
 import shutil
-
+import warnings
+from astropy.utils.exceptions import AstropyWarning
 
 def get_caldb_ver():
     """
@@ -105,6 +106,7 @@ class AutoNICER(object):
         """
         heasarc = Heasarc()
         try:
+            warnings.simplefilter('ignore', category=AstropyWarning)
             xti = heasarc.query_object(
                 self.obj, mission="nicermastr"
             )  # calls NICER master catalogue for an input object
@@ -119,11 +121,7 @@ class AutoNICER(object):
                 i = i.decode()
                 xti.loc[cnt, "OBSID"] = str(i).replace(" ", "")
                 cnt = cnt + 1
-            cnt = 0
-            for i in xti["TIME"]:  # converts times from mjd to datetime format
-                t0 = Time(i, format="mjd").to_datetime()
-                xti.loc[cnt, "TIME"] = t0
-                cnt = cnt + 1
+            xti["TIME"] = Time(xti["TIME"], format="mjd").to_datetime()
             self.xti = xti
 
     def make_cycle(self):
