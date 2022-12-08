@@ -49,6 +49,14 @@ def run(args=None):
         default=None,
     )
 
+    p.add_argument(
+        "-inlist",
+        "--inlist",
+        help="Input .csv list with path to OBSID dirs or mpu7_cl.evt files for use with --reprocess and/or --checkcal",
+        type=str,
+        default=None,
+    )
+
     argp = p.parse_args(args)
     if argp.checkcal is True or argp.reprocess is True:
         check = Reprocess()
