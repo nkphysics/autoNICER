@@ -49,3 +49,13 @@ autoNICER is a program that allows individuals wanting to work with data from th
 ### v1.1.3
 - Fixed bug with single OBSID not resolving. When querying HEASARC sometimes an extra space would be in the OBSID which lead to the resolving issues.
 
+### v1.2.0
+- Added `--checkcal` CLI option to check if calibrations are up to date with an existing NICER OBSID dataset
+- Added `--reprocess` CLI option to reprocess an existing NICER OBSID dataset with nicerl2
+- Added `--bc` CLI option to toggle the barycenter correction setting with autonicer whether pulling and reducing or reprocessing
+- Added `--compress` CLI option to toggle the compression of ufa .evt files again whether pulling and reducing or just reducing
+- Added `--inlist` CLI option that accepts the path to a file in csv format with the column `Input` containing the paths to NICER OBSID datasets or mpu7_cl.evt files (This works great with the output log csv files)
+- Changed compression from .tar.gz format to just .gz format (decompression of .tar.gz's supported to handle files compressed with pervious versions)
+- Tested issues with Astropy v5.1, Astroquery, and HEASARC. Found no issues and supressed warnings.
+- Significant additions to testing taking coverage >= 90%
+- Resolved dependency vulnerability with CVE-2022-42969 

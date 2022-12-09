@@ -1,4 +1,3 @@
-[![CI Tests](https://github.com/nkphysics/autoNICER/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/nkphysics/autoNICER/actions/workflows/ci.yaml)
 [![PyPI](https://img.shields.io/pypi/v/autonicer.svg)](https://pypi.org/project/autonicer/)
 # autoNICER
 A piece of software that allows for the automated retrieval, and default data reduction of NICER data. This software was developed to automate the retrieval of NICER data and perform standardized data reduction on the retrieved NICER data. 
@@ -23,7 +22,7 @@ See it here:
 
 
 ## Pre-Requisite Software
-- HEASoft v6.29c, v6.30, RECOMMENDED v6.30.1 <https://heasarc.gsfc.nasa.gov/docs/software/lheasoft/>
+- HEASoft v6.29c, v6.30.1, RECOMMENDED v6.31 <https://heasarc.gsfc.nasa.gov/docs/software/lheasoft/>
 
 A video tutorial on how to generally install heasoft can be found here: <https://youtu.be/3-gobnSEuDo>
 - Remote CALDB <https://heasarc.gsfc.nasa.gov/docs/heasarc/caldb/caldb_remote_access.html>
@@ -57,7 +56,7 @@ For development cases:
 
 3. Run autonicer by calling the local installation (i.e. `$ autonicer`)
 	
-4. Upon starting autoNICER you will be asked to input the target source that you would like to query. Input the same source that you queryed in the web browser.
+4. Upon starting autoNICER you will be asked to input the target source that you would like to query. Input the same source that you queryed in the web browser (ex: PSR_B0531+21).
 
 5. Next you will be prompted to select the settings. You can select the following
 	- If you want a barycenter correction performed
@@ -66,4 +65,6 @@ For development cases:
 
 6. Next you will see the following prompt `autoNICER > `. Enter in the desired OBSID for the observation that you want retrieved and reduced. Better yet, copy the desired observation ID from the HEASARC archive and paste into the program. This will query that observation to be retrieved and processed. Type `sel` to see all the OBSID's you've selected. Type `cycle [cycle number]`(not with the brackets) to select all OBSID's from a specific cycle. You can use the `rm [all or OBSID]` or `back` commands to remove unwanted OBSID's that you may have selected by mistake. Type `done` when you have entered in all the observation IDs you want retrieved and reduced.
 	
-7. You will see autoNICER start retrieving the data with wget, then that will be fed directly into `nicerl2`, then it will be barycenter corrected and lastly compressed in a .tar.gz format if you selected for it to happen. Selected OBSID's are retrieved and processed in series so autoNICER will move on the the next OBSID you've queryed up and give you back command of your terminal after it has retrieved and reduced all selected OBSIDs.
+7. You will see autoNICER start retrieving the data with wget, then that will be fed directly into `nicerl2`, then it will be barycenter corrected and lastly compressed in a .gz format if you selected for it to happen. Selected OBSID's are retrieved and processed in series so autoNICER will move on the the next OBSID you've queryed up and give you back command of your terminal after it has retrieved and reduced all selected OBSIDs.
+
+- Run `autonicer --help` for a list of CLI options
