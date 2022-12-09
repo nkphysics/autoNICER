@@ -120,6 +120,8 @@ def test_get_caldbver():
 
 
 def test_pullreduce():
+    an.q_set = "y"
+    an.q_name = "test"
     an.command_center("3013010102")
     an.command_center("done")
     os.chdir(f"{base_dir}/data/3013010102/xti/event_cl/")
@@ -203,8 +205,8 @@ def test_reprocess(setup_reprocess):
 
 def test_checkcal_reprocess(capsys):
     try:
-        os.chdir(f"{base_dir}/data/3013010102")
-        autonicer.run(["--checkcal", "--reprocess", "--bc", "--compress"])
+        os.chdir(f"{base_dir}/data")
+        autonicer.run(["--checkcal", "--reprocess", "--bc", "--compress", "--inlist=test.csv"])
     except SystemExit:
         pass
     out, err = capsys.readouterr()
