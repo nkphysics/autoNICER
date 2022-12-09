@@ -4,6 +4,7 @@ import os
 import shutil
 import gzip
 import tarfile
+import pandas as pd
 from astropy.io import fits
 from termcolor import colored
 import sys
@@ -124,3 +125,22 @@ class Reprocess:
         os.chdir(f"{self.base_dir}/xti/event_cl/")
         if compress is True or self.comp_det is True:
             an.nicer_compress()
+            
+def inlist(argp):
+    """
+    Runs --reprocess and/or checkcal for an input file with paths to NICER OBSID dirs 
+    or .evt files
+    """
+    cwd = os.getcwd()
+    df = pd.read_csv(f"{argp.inlist}")
+    for i in df["Input"]:
+        path_sep = i.split("/xti/event_cl/")
+        os.chdir(path_sep[0])
+        if argp.checkcal is True or argp.reprocess is True:
+            check = Reprocess()
+            if argp.checkcal is True:
+                check.checkcal()
+            if argp.reprocess == True:
+                check.reprocess(argp.bc, argp.compress)
+        os.chdir(cwd)
+        

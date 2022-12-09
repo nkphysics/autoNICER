@@ -2,6 +2,7 @@ from .autonicer import AutoNICER
 from .autonicer import get_caldb_ver
 from .autonicer import file_find
 from .reprocess import Reprocess
+from .reprocess import inlist
 import argparse as ap
 
 
@@ -59,11 +60,14 @@ def run(args=None):
 
     argp = p.parse_args(args)
     if argp.checkcal is True or argp.reprocess is True:
-        check = Reprocess()
-        if argp.checkcal is True:
-            check.checkcal()
-        if argp.reprocess == True:
-            check.reprocess(argp.bc, argp.compress)
+        if argp.inlist is None:
+            check = Reprocess()
+            if argp.checkcal is True:
+                check.checkcal()
+            if argp.reprocess is True:
+                check.reprocess(argp.bc, argp.compress)
+        else:
+            inlist(argp)
     else:
         an = autonicer.AutoNICER(argp.src, argp.bc, argp.compress)
         an.call_nicer()

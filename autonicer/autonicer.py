@@ -384,7 +384,7 @@ class AutoNICER(object):
                 self.add2q(read_q, base_dir, obsid)
             elif self.q_set == "y" and self.q_path == 0:
                 q = pd.DataFrame(
-                    {"Input": [], "Name": [], "CALDB_ver": [], "DateTime": []}
+                    {"Input": [], "OBSID": [], "CALDB": [], "DateTime": []}
                 )
                 self.q_path = f"{base_dir}/{self.q_name}.csv"
                 self.add2q(q, base_dir, obsid)
