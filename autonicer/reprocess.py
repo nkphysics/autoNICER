@@ -111,20 +111,20 @@ class Reprocess:
         """
         if self.calstate is True:
             print(f"----------  Passing Reprocess of {self.obsid}  ----------")
-            sys.exit()
-        self.decompress()
-        if bc is True:
-            self.bc_det = bc
-        an = autonicer.AutoNICER(src=self.src, bc=self.bc_det, comp=False)
-        an.observations.append(self.obsid)
-        an.ras.append(self.ra)
-        an.decs.append(self.dec)
-        proc_dir = self.base_dir.split(f"{self.obsid}")
-        os.chdir(proc_dir[0])
-        an.reduce(self.obsid)
-        os.chdir(f"{self.base_dir}/xti/event_cl/")
-        if compress is True or self.comp_det is True:
-            an.nicer_compress()
+        else:
+            self.decompress()
+            if bc is True:
+                self.bc_det = bc
+            an = autonicer.AutoNICER(src=self.src, bc=self.bc_det, comp=False)
+            an.observations.append(self.obsid)
+            an.ras.append(self.ra)
+            an.decs.append(self.dec)
+            proc_dir = self.base_dir.split(f"{self.obsid}")
+            os.chdir(proc_dir[0])
+            an.reduce(self.obsid)
+            os.chdir(f"{self.base_dir}/xti/event_cl/")
+            if compress is True or self.comp_det is True:
+                an.nicer_compress()
 
 
 def reprocess_check(argp):
