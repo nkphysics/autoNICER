@@ -58,4 +58,8 @@ autoNICER is a program that allows individuals wanting to work with data from th
 - Changed compression from .tar.gz format to just .gz format (decompression of .tar.gz's supported to handle files compressed with pervious versions)
 - Tested issues with Astropy v5.1, Astroquery, and HEASARC. Found no issues and supressed warnings.
 - Significant additions to testing taking coverage >= 90%
-- Resolved dependency vulnerability with CVE-2022-42969 
+- Resolved dependency vulnerability with CVE-2022-42969
+
+### v1.2.1
+- Fixed vulnerability with CVE-2022-2341
+- Fixed issue where --checkcal kills --inlist cmd  
