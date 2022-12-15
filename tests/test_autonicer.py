@@ -8,6 +8,7 @@ import pytest
 import shutil
 import subprocess as sp
 import tarfile
+import glob
 
 base_dir = os.getcwd()
 os.mkdir("data")
@@ -125,13 +126,13 @@ def test_pullreduce():
     an.command_center("3013010102")
     an.command_center("done")
     os.chdir(f"{base_dir}/data/3013010102/xti/event_cl/")
-    ufa = autonicer.file_find("*ufa.evt")
+    ufa = glob.glob("*ufa.evt")
     assert len(ufa) == 0
-    ufa_gz = autonicer.file_find("*ufa.evt.gz")
+    ufa_gz = glob.glob("*ufa.evt.gz")
     assert len(ufa_gz) == 8
-    cl = autonicer.file_find("*cl.evt")
+    cl = glob.glob("*cl.evt")
     assert len(cl) == 2
-    cl_gz = autonicer.file_find("*cl.evt.gz")
+    cl_gz = glob.glob("*cl.evt.gz")
     assert len(cl_gz) == 0
     os.chdir(f"{base_dir}")
 
@@ -169,8 +170,8 @@ def test_decompress(setup_reprocess):
     check = setup_reprocess
     comp_det = check.decompress()
     assert comp_det is True
-    gzs = autonicer.file_find("*evt.gz")
-    tars = autonicer.file_find("*.tar.gz")
+    gzs = glob.glob("*evt.gz")
+    tars = glob.glob("*.tar.gz")
     assert len(gzs) == 0
     assert len(tars) == 0
     os.chdir(f"{base_dir}/data/")
@@ -206,7 +207,9 @@ def test_reprocess(setup_reprocess):
 def test_checkcal_reprocess(capsys):
     try:
         os.chdir(f"{base_dir}/data")
-        autonicer.run(["--checkcal", "--reprocess", "--bc", "--compress", "--inlist=test.csv"])
+        autonicer.run(
+            ["--checkcal", "--reprocess", "--bc", "--compress", "--inlist=test.csv"]
+        )
     except SystemExit:
         pass
     out, err = capsys.readouterr()
