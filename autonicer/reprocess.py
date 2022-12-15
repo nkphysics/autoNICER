@@ -146,13 +146,13 @@ def inlist(argp):
     """
     cwd = os.getcwd()
     try:
-        df = pd.read_csv(f"{argp.inlist}") 
+        df = pd.read_csv(f"{argp.inlist}")
         for i in df["Input"]:
             path_sep = i.split("/xti/event_cl/")
             os.chdir(path_sep[0])
             if argp.checkcal is True or argp.reprocess is True:
                 reprocess_check(argp)
             os.chdir(cwd)
-        
+
     except FileNotFoundError:
         print(colored(f"{argp.inlist} NOT FOUND ", "red"))

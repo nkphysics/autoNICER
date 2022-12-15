@@ -1,6 +1,5 @@
 from .autonicer import AutoNICER
 from .autonicer import get_caldb_ver
-from .autonicer import file_find
 from .reprocess import reprocess_check
 from .reprocess import inlist
 from .reprocess import Reprocess

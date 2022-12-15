@@ -20,6 +20,7 @@ import shutil
 import warnings
 from astropy.utils.exceptions import AstropyWarning
 
+
 def get_caldb_ver():
     """
     Gets most up to nicer caldb version
@@ -27,18 +28,6 @@ def get_caldb_ver():
     caldb = sp.run("nicaldbver", shell=True, capture_output=True, encoding="utf-8")
     convo = str(caldb.stdout).split("\n")
     return convo[0]
-
-
-def file_find(query):
-    """
-    Runs a ls command and returns the contents in a list
-    """
-    files = sp.run(f"ls {query}", shell=True, capture_output=True, encoding="utf-8")
-    filelist = []
-    for i in str(files.stdout).split("\n"):
-        if i != "":
-            filelist.append(i)
-    return filelist
 
 
 class AutoNICER(object):
@@ -106,7 +95,7 @@ class AutoNICER(object):
         """
         heasarc = Heasarc()
         try:
-            warnings.simplefilter('ignore', category=AstropyWarning)
+            warnings.simplefilter("ignore", category=AstropyWarning)
             xti = heasarc.query_object(
                 self.obj, mission="nicermastr"
             )  # calls NICER master catalogue for an input object
