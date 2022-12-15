@@ -8,6 +8,7 @@ import pandas as pd
 from astropy.io import fits
 from termcolor import colored
 import sys
+import glob
 
 
 class Reprocess:
@@ -85,7 +86,7 @@ class Reprocess:
         """
         print(colored(f"######## Decompressing {self.obsid} ########", "green"))
         os.chdir(f"{self.base_dir}/xti/event_cl/")
-        gzs = autonicer.file_find("*.evt.gz")
+        gzs = glob.glob("*.evt.gz")
         for i in gzs:
             with gzip.open(i, "rb") as gz_in:
                 fname = str(i).split(".gz")
@@ -93,7 +94,7 @@ class Reprocess:
                     print(f"{i} -> {fname[0]}")
                     shutil.copyfileobj(gz_in, orig_out)
             os.remove(i)
-        tars = autonicer.file_find("*.tar.gz")
+        tars = glob.glob("*.tar.gz")
         for i in tars:
             tfile = tarfile.open(i, "r:gz")
             print(f"Extracting {i}")
