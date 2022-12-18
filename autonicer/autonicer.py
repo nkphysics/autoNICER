@@ -18,6 +18,7 @@ import datetime
 import gzip
 import shutil
 import warnings
+import glob
 from astropy.utils.exceptions import AstropyWarning
 
 
@@ -284,8 +285,8 @@ class AutoNICER(object):
         print("Compressing ufa.evt files")
         print("----------------------------------------------------------")
         # files and loop to compress the ufa files
-        files = sp.run("ls *ufa.evt", shell=True, capture_output=True, encoding="utf-8")
-        for i in str(files.stdout).split("\n"):
+        files = glob.glob("*ufa.evt")
+        for i in files:
             gz_comp(i)
 
         # compression of the non-bc mpu7_cl.evt file if barycenter correction is selected
