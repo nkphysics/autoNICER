@@ -12,8 +12,11 @@ import glob
 
 
 class Reprocess:
-    def __init__(self):
-        self.curr_caldb = autonicer.get_caldb_ver()
+    def __init__(self, cals=None):
+        if cals is None:
+            self.curr_caldb = autonicer.get_caldb_ver()
+        else:
+            self.curr_caldb = cals
         self.base_dir = os.getcwd()
         self.last_caldb = None
         self.calstate = None
@@ -128,11 +131,11 @@ class Reprocess:
                 an.nicer_compress()
 
 
-def reprocess_check(argp):
+def reprocess_check(argp, cals=None):
     """
     Parses and Runs --reprocess and --checkcal
     """
-    check = Reprocess()
+    check = Reprocess(cals)
     if argp.checkcal is True:
         check.checkcal()
     if argp.reprocess is True:
@@ -145,13 +148,14 @@ def inlist(argp):
     or .evt files
     """
     cwd = os.getcwd()
+    curr_cals = autonicer.get_caldb_ver()
     try:
         df = pd.read_csv(f"{argp.inlist}")
         for i in df["Input"]:
             path_sep = i.split("/xti/event_cl/")
             os.chdir(path_sep[0])
             if argp.checkcal is True or argp.reprocess is True:
-                reprocess_check(argp)
+                reprocess_check(argp, curr_cals)
             os.chdir(cwd)
 
     except FileNotFoundError:
