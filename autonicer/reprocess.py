@@ -33,17 +33,14 @@ class Reprocess:
         Gets all cl.evt files associated with an existing NICER dataset
         """
         os.chdir(f"xti/event_cl/")
-        files = sp.run("ls *cl.evt", shell=True, capture_output=True, encoding="utf-8")
-        filelist = []
-        for i in str(files.stdout).split("\n"):
-            if i != "":
-                filelist.append(i)
-                if self.src == None:
-                    self.get_meta(i)
+        files = glob.glob("*cl.evt")
+        for i in files:
+            if self.src == None:
+                self.get_meta(i)
             if i == f"bc{self.obsid}_0mpu7_cl.evt":
                 self.bc_det = True
         os.chdir(self.base_dir)
-        return filelist
+        return files
 
     def get_meta(self, infile):
         """
