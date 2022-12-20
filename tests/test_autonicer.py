@@ -158,7 +158,27 @@ def test_getmeta(setup_reprocess):
     assert check.src == "PSR_B0531+21"
     assert check.ra == 83.63308
     assert check.dec == 22.01449
-    os.chdir(f"{base_dir}/data/")
+    
+def test_nometa(capsys):
+    os.chdir(f"{base_dir}/data/3013010102/xti/event_cl/")
+    cl_files = glob.glob("*cl.evt")
+    metadata = {
+        "OBJECT": "PSR_B0531+21",
+        "OBS_ID": "3013010102",
+        "RA_OBJ": 83.63308,
+        "DEC_OBJ": 22.01449,
+    }
+    for i in cl_files:
+        hdul = fits.open(i)
+        for j, k in metadata.items():
+            del hdul[0].header[j]
+        hdul.writeto(i, overwrite=True)
+        hdul.close()
+    os.chdir(f"{base_dir}/data/3013010102")
+    check = autonicer.Reprocess()
+    out, err = capsys.readouterr()
+    fail = "Consider Re-downloading and reducing this dataset"
+    assert fail in out
 
 
 def test_decompress(setup_reprocess):

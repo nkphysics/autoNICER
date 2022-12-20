@@ -47,12 +47,22 @@ class Reprocess:
         Gets relevant metadata for reprocessing from NICER dataset
         """
         hdul = fits.open(infile)
-        self.src = hdul[0].header["OBJECT"]
-        self.obsid = hdul[0].header["OBS_ID"]
-        self.ra = hdul[0].header["RA_OBJ"]
-        self.dec = hdul[0].header["DEC_OBJ"]
-        hdul.close()
-        return True
+        try:
+            self.obsid = hdul[0].header["OBS_ID"]
+            self.ra = hdul[0].header["RA_OBJ"]
+            self.dec = hdul[0].header["DEC_OBJ"]
+        except KeyError:
+            print(colored("Unable to identify required metadata.", "red"))
+            print("Consider Re-downloading and reducing this dataset")
+            print("OR")
+            print("Try nicerl2 manually")
+        try:
+            self.src = hdul[0].header["OBJECT"]
+        except KeyError:
+            print("Unable to identify Object -> IS OK")
+            print("Proceeding with Reduction...")
+            self.src = False
+        return self.src
 
     def checkcal(self):
         """
