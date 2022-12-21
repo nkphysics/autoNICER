@@ -26,6 +26,7 @@ class Reprocess:
         self.dec = None
         self.bc_det = False
         self.comp_det = False
+        self.reprocess_err = None
         self.clevts = self.get_clevts()
 
     def get_clevts(self):
@@ -56,13 +57,14 @@ class Reprocess:
             print("Consider Re-downloading and reducing this dataset")
             print("OR")
             print("Try nicerl2 manually")
+            self.reprocess_err = True
         try:
             self.src = hdul[0].header["OBJECT"]
         except KeyError:
             print("Unable to identify Object -> IS OK")
             print("Proceeding with Reduction...")
             self.src = False
-        return self.src
+        return self.src, self.reprocess_err
 
     def checkcal(self):
         """
@@ -122,6 +124,8 @@ class Reprocess:
         """
         if self.calstate is True:
             print(f"----------  Passing Reprocess of {self.obsid}  ----------")
+        elif self.reprocess_err is True:
+            print(colored("!!!!! CANNOT REPROCESS !!!!!"), "red")
         else:
             self.decompress()
             if bc is True:

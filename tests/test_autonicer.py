@@ -178,9 +178,13 @@ def test_nometa(capsys):
         hdul.close()
     os.chdir(f"{base_dir}/data/3013010102")
     check = autonicer.Reprocess()
+    check.reprocess()
     out, err = capsys.readouterr()
     fail = "Consider Re-downloading and reducing this dataset"
+    fail_reprocess = "!!!!! CANNOT REPROCESS !!!!!"
     assert fail in out
+    assert fail_reprocess in out
+    assert check.reprocess_err is True
 
     os.chdir(f"{base_dir}/data/3013010102/xti/event_cl/")
     for i in cl_files:
@@ -195,6 +199,8 @@ def test_nometa(capsys):
     out2, err2 = capsys.readouterr()
     fail2 = "Unable to identify Object -> IS OK"
     assert fail2 in out
+    assert check2.reprocess_err is None
+    assert check2.src is False
 
 
 def test_decompress(setup_reprocess):
