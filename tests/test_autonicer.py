@@ -226,6 +226,21 @@ def test_checkcal(setup_reprocess):
     os.chdir(f"{base_dir}/data/")
 
 
+def test_no_caldb(capsys, setup_reprocess):
+    os.chdir(f"{base_dir}/data/3013010102/xti/event_cl/")
+    cl_files = glob.glob("*cl.evt")
+    for i in cl_files:
+        hdul = fits.open(i)
+        del hdul[0].header["CALDBVER"]
+        hdul.writeto(i, overwrite=True)
+        hdul.close()
+    check = setup_reprocess
+    check.checkcal()
+    out, err = capsys.readouterr()
+    fail = "!!!!! CANNOT IDENTIFY CALDB !!!!!"
+    assert fail in out
+
+
 def get_processed_time(file):
     hdul = fits.open(file)
     dt_created = hdul[1].header["DATE"]

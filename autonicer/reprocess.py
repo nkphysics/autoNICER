@@ -75,8 +75,12 @@ class Reprocess:
         for i in self.clevts:
             os.chdir(f"{self.base_dir}/xti/event_cl/")
             hdul = fits.open(i)
-            self.last_caldb = hdul[0].header["CALDBVER"]
-            print(f"CALDB for {i}: {self.last_caldb}")
+            try:
+                self.last_caldb = hdul[0].header["CALDBVER"]
+                print(f"CALDB for {i}: {self.last_caldb}")
+            except KeyError:
+                print(colored("!!!!! CANNOT IDENTIFY CALDB !!!!!", "red"))
+                break
 
             premessage = ""
             color = "red"
