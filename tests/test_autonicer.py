@@ -249,9 +249,11 @@ def test_reprocess(setup_reprocess):
 def test_checkcal_reprocess(capsys):
     try:
         os.chdir(f"{base_dir}/data")
-        autonicer.run(
-            ["--checkcal", "--reprocess", "--bc", "--compress", "--inlist=test.csv"]
-        )
+        files = ["test.csv", "fail.lis"]
+        for i in files:
+            autonicer.run(
+                ["--checkcal", "--reprocess", "--bc", "--compress", f"--inlist={i}"]
+            )
     except SystemExit:
         pass
     out, err = capsys.readouterr()
