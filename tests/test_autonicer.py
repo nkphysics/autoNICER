@@ -273,7 +273,9 @@ def test_checkcal_reprocess(capsys):
         pass
     out, err = capsys.readouterr()
     passing = f"----------  Passing Reprocess of 3013010102  ----------"
+    fail = "fail.lis NOT FOUND"
     assert passing in out
+    assert fail in out
 
 
 def test_cleanup():

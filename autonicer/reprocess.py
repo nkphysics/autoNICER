@@ -174,4 +174,4 @@ def inlist(argp):
             os.chdir(cwd)
 
     except FileNotFoundError:
-        print(colored(f"{argp.inlist} NOT FOUND ", "red"))
+        print(colored(f"{argp.inlist} NOT FOUND", "red"))
