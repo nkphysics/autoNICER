@@ -264,7 +264,7 @@ def test_reprocess(setup_reprocess):
 def test_checkcal_reprocess(capsys):
     try:
         os.chdir(f"{base_dir}/data")
-        files = ["test.csv", "fail.lis"]
+        files = ["test.csv", "fail.lis", "*"]
         for i in files:
             autonicer.run(
                 ["--checkcal", "--reprocess", "--bc", "--compress", f"--inlist={i}"]
@@ -273,9 +273,11 @@ def test_checkcal_reprocess(capsys):
         pass
     out, err = capsys.readouterr()
     passing = f"----------  Passing Reprocess of 3013010102  ----------"
-    fail = "fail.lis NOT FOUND"
+    fail = "DATASETS NOT FOUND"
+    unix = "Using Unix Query..."
     assert passing in out
     assert fail in out
+    assert unix in out
 
 
 def test_cleanup():

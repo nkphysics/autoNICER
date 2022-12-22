@@ -174,4 +174,11 @@ def inlist(argp):
             os.chdir(cwd)
 
     except FileNotFoundError:
-        print(colored(f"{argp.inlist} NOT FOUND", "red"))
+        try:
+            print("Using Unix Query...")
+            dirs = glob.glob(f"{argp.inlist}")
+            if argp.checkcal is True or argp.reprocess is True:
+                reprocess_check(argp, curr_cals)
+            os.chdir(cwd)
+        except FileNotFoundError:
+            print(colored(f"DATASETS NOT FOUND", "red"))
