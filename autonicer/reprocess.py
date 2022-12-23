@@ -175,12 +175,15 @@ def inlist(argp):
 
     except FileNotFoundError:
         try:
-            print("Using Unix Query...")
             dirs = glob.glob(f"{argp.inlist}")
-            for i in dirs:
-                os.chdir(i)
-                if argp.checkcal is True or argp.reprocess is True:
-                    reprocess_check(argp, curr_cals)
-                os.chdir(cwd)
+            if len(dirs) != 0:
+                for i in dirs:
+                    os.chdir(i)
+                    print(f"Migrating to {i}")
+                    if argp.checkcal is True or argp.reprocess is True:
+                        reprocess_check(argp, curr_cals)
+                    os.chdir(cwd)
+            else:
+                raise FileNotFoundError
         except FileNotFoundError:
             print(colored(f"DATASETS NOT FOUND", "red"))
