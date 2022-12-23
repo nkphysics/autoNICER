@@ -177,11 +177,14 @@ def inlist(argp):
         dirs = glob.glob(f"{argp.inlist}")
         if len(dirs) != 0:
             for i in dirs:
-                os.chdir(i)
-                print(f"Migrating to {i}")
-                if argp.checkcal is True or argp.reprocess is True:
-                    reprocess_check(argp, curr_cals)
-                os.chdir(cwd)
+                try:
+                    os.chdir(i)
+                    print(f"Migrating to {i}")
+                    if argp.checkcal is True or argp.reprocess is True:
+                        reprocess_check(argp, curr_cals)
+                    os.chdir(cwd)
+                except NotADirectoryError:
+                    print(f"{i} is not a directory! Passing...")
         else:
             print(colored(f"DATASETS NOT FOUND", "red"))
     except pd.errors.ParserError:
