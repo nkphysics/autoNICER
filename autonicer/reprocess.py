@@ -174,16 +174,18 @@ def inlist(argp):
             os.chdir(cwd)
 
     except FileNotFoundError:
-        try:
-            dirs = glob.glob(f"{argp.inlist}")
-            if len(dirs) != 0:
-                for i in dirs:
-                    os.chdir(i)
-                    print(f"Migrating to {i}")
-                    if argp.checkcal is True or argp.reprocess is True:
-                        reprocess_check(argp, curr_cals)
-                    os.chdir(cwd)
-            else:
-                raise FileNotFoundError
-        except FileNotFoundError:
+        dirs = glob.glob(f"{argp.inlist}")
+        if len(dirs) != 0:
+            for i in dirs:
+                os.chdir(i)
+                print(f"Migrating to {i}")
+                if argp.checkcal is True or argp.reprocess is True:
+                    reprocess_check(argp, curr_cals)
+                os.chdir(cwd)
+        else:
             print(colored(f"DATASETS NOT FOUND", "red"))
+    except pd.errors.ParserError:
+        print(colored(f"Unable to resolve --inlist {argp.inlist}", "red"))
+    except KeyError:
+        print(colored(f"{argp.inlist} format not readable", "red"))
+        print("Format must be csv with Input column for inlist files...")

@@ -280,6 +280,18 @@ def test_checkcal_reprocess(capsys):
     assert unix in out
 
 
+def test_inlist_readin(capsys):
+    os.chdir(f"{base_dir}")
+    files = ["requirements.txt", "README.md"]
+    for i in files:
+        autonicer.run(["--checkcal", f"--inlist={i}"])
+    out, err = capsys.readouterr()
+    pd_err = "Unable to resolve --inlist README.md"
+    key_err = "requirements.txt format not readable"
+    assert pd_err in out
+    assert key_err in out
+
+
 def test_cleanup():
     os.chdir(base_dir)
     shutil.rmtree("data/")
