@@ -286,7 +286,7 @@ def test_inlist_readin(capsys):
     os.chdir(f"{base_dir}")
     files = ["requirements.txt", "README.md"]
     for i in files:
-        autonicer.run(["--checkcal", f"--inlist={i}"])
+        autonicer.run(["--checkcal", "--inlist", f"{i}"])
     out, err = capsys.readouterr()
     pd_err = "Unable to resolve --inlist README.md"
     key_err = "requirements.txt format not readable"

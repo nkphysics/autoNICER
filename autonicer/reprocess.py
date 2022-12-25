@@ -165,16 +165,21 @@ def inlist(argp):
     cwd = os.getcwd()
     curr_cals = autonicer.get_caldb_ver()
     try:
-        df = pd.read_csv(f"{argp.inlist}")
-        for i in df["Input"]:
-            path_sep = i.split("/xti/event_cl/")
-            os.chdir(path_sep[0])
-            if argp.checkcal is True or argp.reprocess is True:
-                reprocess_check(argp, curr_cals)
-            os.chdir(cwd)
+        if len(argp.inlist) == 1:
+            df = pd.read_csv(f"{argp.inlist[0]}")
+            for i in df["Input"]:
+                path_sep = i.split("/xti/event_cl/")
+                os.chdir(path_sep[0])
+                if argp.checkcal is True or argp.reprocess is True:
+                    reprocess_check(argp, curr_cals)
+                os.chdir(cwd)
+        else:
+            raise FileNotFoundError
 
     except FileNotFoundError:
-        dirs = glob.glob(f"{argp.inlist}")
+        dirs = argp.inlist
+        if len(argp.inlist) == 1:
+            dirs = glob.glob(f"{argp.inlist[0]}")
         if len(dirs) != 0:
             for i in dirs:
                 try:
@@ -188,7 +193,7 @@ def inlist(argp):
         else:
             print(colored(f"DATASETS NOT FOUND", "red"))
     except pd.errors.ParserError:
-        print(colored(f"Unable to resolve --inlist {argp.inlist}", "red"))
+        print(colored(f"Unable to resolve --inlist {argp.inlist[0]}", "red"))
     except KeyError:
-        print(colored(f"{argp.inlist} format not readable", "red"))
+        print(colored(f"{argp.inlist[0]} format not readable", "red"))
         print("Format must be csv with Input column for inlist files...")

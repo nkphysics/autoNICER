@@ -54,8 +54,8 @@ def run(args=None):
         "-inlist",
         "--inlist",
         help="Input .csv list with path to OBSID dirs or mpu7_cl.evt files for use with --reprocess and/or --checkcal",
-        type=str,
         default=None,
+        nargs="+",
     )
 
     argp = p.parse_args(args)
