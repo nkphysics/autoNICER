@@ -63,3 +63,9 @@ autoNICER is a program that allows individuals wanting to work with data from th
 ### v1.2.1
 - Fixed vulnerability with CVE-2022-2341
 - Fixed issue where --checkcal kills --inlist cmd  
+
+### v1.2.2
+- Migrated sp.run("ls STUFF") commands to glob
+- Limited get_caldb_ver() pulls to once per run of autonicer rather than once per OBSID passed in
+- Added error handling for datasets lacking the required metadata
+- Added unix like passthrough to `--inlist` so use cases like `--inlist *` will pass in all datasets for the current working dir
