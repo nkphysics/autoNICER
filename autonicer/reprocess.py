@@ -52,18 +52,18 @@ class Reprocess:
             self.obsid = hdul[0].header["OBS_ID"]
             self.ra = hdul[0].header["RA_OBJ"]
             self.dec = hdul[0].header["DEC_OBJ"]
+            try:
+                self.src = hdul[0].header["OBJECT"]
+            except KeyError:
+                print("Unable to identify Object -> IS OK")
+                print("Proceeding with Reduction...")
+                self.src = False
         except KeyError:
             print(colored("Unable to identify required metadata.", "red"))
             print("Consider Re-downloading and reducing this dataset")
             print("OR")
             print("Try nicerl2 manually")
             self.reprocess_err = True
-        try:
-            self.src = hdul[0].header["OBJECT"]
-        except KeyError:
-            print("Unable to identify Object -> IS OK")
-            print("Proceeding with Reduction...")
-            self.src = False
         return self.src, self.reprocess_err
 
     def checkcal(self):

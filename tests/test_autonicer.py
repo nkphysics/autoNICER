@@ -198,7 +198,8 @@ def test_nometa(capsys):
     check2 = autonicer.Reprocess()
     out2, err2 = capsys.readouterr()
     fail2 = "Unable to identify Object -> IS OK"
-    assert fail2 in out
+    assert fail2 in out2
+    assert fail not in out2
     assert check2.reprocess_err is None
     assert check2.src is False
 
