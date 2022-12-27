@@ -49,11 +49,11 @@ class Reprocess:
         """
         hdul = fits.open(infile)
         try:
-            self.obsid = hdul[0].header["OBS_ID"]
-            self.ra = hdul[0].header["RA_OBJ"]
-            self.dec = hdul[0].header["DEC_OBJ"]
+            self.obsid = hdul[1].header["OBS_ID"]
+            self.ra = hdul[1].header["RA_OBJ"]
+            self.dec = hdul[1].header["DEC_OBJ"]
             try:
-                self.src = hdul[0].header["OBJECT"]
+                self.src = hdul[1].header["OBJECT"]
             except KeyError:
                 print("Unable to identify Object -> IS OK")
                 print("Proceeding with Reduction...")
@@ -76,7 +76,7 @@ class Reprocess:
             os.chdir(f"{self.base_dir}/xti/event_cl/")
             hdul = fits.open(i)
             try:
-                self.last_caldb = hdul[0].header["CALDBVER"]
+                self.last_caldb = hdul[1].header["CALDBVER"]
                 print(f"CALDB for {i}: {self.last_caldb}")
             except KeyError:
                 print(colored("!!!!! CANNOT IDENTIFY CALDB !!!!!", "red"))

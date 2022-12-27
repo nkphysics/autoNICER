@@ -173,7 +173,7 @@ def test_nometa(capsys):
     for i in cl_files:
         hdul = fits.open(i)
         for j, k in metadata.items():
-            del hdul[0].header[j]
+            del hdul[1].header[j]
         hdul.writeto(i, overwrite=True)
         hdul.close()
     os.chdir(f"{base_dir}/data/3013010102")
@@ -189,9 +189,9 @@ def test_nometa(capsys):
     os.chdir(f"{base_dir}/data/3013010102/xti/event_cl/")
     for i in cl_files:
         hdul = fits.open(i)
-        hdul[0].header["OBS_ID"] = metadata["OBS_ID"]
-        hdul[0].header["RA_OBJ"] = metadata["RA_OBJ"]
-        hdul[0].header["DEC_OBJ"] = metadata["DEC_OBJ"]
+        hdul[1].header["OBS_ID"] = metadata["OBS_ID"]
+        hdul[1].header["RA_OBJ"] = metadata["RA_OBJ"]
+        hdul[1].header["DEC_OBJ"] = metadata["DEC_OBJ"]
         hdul.writeto(i, overwrite=True)
         hdul.close()
     os.chdir(f"{base_dir}/data/3013010102")
@@ -232,7 +232,7 @@ def test_no_caldb(capsys, setup_reprocess):
     cl_files = glob.glob("*cl.evt")
     for i in cl_files:
         hdul = fits.open(i)
-        del hdul[0].header["CALDBVER"]
+        del hdul[1].header["CALDBVER"]
         hdul.writeto(i, overwrite=True)
         hdul.close()
     check = setup_reprocess
