@@ -192,6 +192,9 @@ def test_nometa(capsys):
         hdul[1].header["OBS_ID"] = metadata["OBS_ID"]
         hdul[1].header["RA_OBJ"] = metadata["RA_OBJ"]
         hdul[1].header["DEC_OBJ"] = metadata["DEC_OBJ"]
+        assert hdul[1].header["OBS_ID"] == hdul[0].header["OBS_ID"]
+        assert hdul[1].header["RA_OBJ"] == hdul[0].header["RA_OBJ"]
+        assert hdul[1].header["DEC_OBJ"] == hdul[0].header["DEC_OBJ"]
         hdul.writeto(i, overwrite=True)
         hdul.close()
     os.chdir(f"{base_dir}/data/3013010102")
