@@ -184,7 +184,7 @@ def inlist(argp):
             for i in dirs:
                 try:
                     os.chdir(i)
-                    print(f"Migrating to {i}")
+                    print(f"Migrating to {colored(i, 'cyan')}")
                     if argp.checkcal is True or argp.reprocess is True:
                         reprocess_check(argp, curr_cals)
                     os.chdir(cwd)
