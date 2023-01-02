@@ -69,3 +69,9 @@ autoNICER is a program that allows individuals wanting to work with data from th
 - Limited get_caldb_ver() pulls to once per run of autonicer rather than once per OBSID passed in
 - Added error handling for datasets lacking the required metadata
 - Added unix like passthrough to `--inlist` so use cases like `--inlist *` will pass in all datasets for the current working dir
+
+### v1.2.3
+- Fixed error handling messages for missing metadata in cl.evt files
+- Switched the pull of required metadata from hdu[0] (primary header) to hdu[1] (event header) for the cl.evt NICER files
+- Added OBSID corolation for easier identification
+
