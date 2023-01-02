@@ -19,6 +19,7 @@ import gzip
 import shutil
 import warnings
 import glob
+import concurrent.futures
 from astropy.utils.exceptions import AstropyWarning
 
 
@@ -278,16 +279,19 @@ class AutoNICER(object):
             else:
                 with open(file, "rb") as f_in:
                     with gzip.open(f"{file}.gz", "wb") as f_out:
-                        print(f"{file} -> {file}.gz")
                         shutil.copyfileobj(f_in, f_out)
                 os.remove(file)
+                return f"{file} -> {file}.gz"
 
         print("Compressing ufa.evt files")
         print("----------------------------------------------------------")
         # files and loop to compress the ufa files
         files = glob.glob("*ufa.evt")
-        for i in files:
-            gz_comp(i)
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            comps = [executor.submit(gz_comp, i) for i in files]
+
+            for j in concurrent.futures.as_completed(comps):
+                print(j.result())
 
         # compression of the non-bc mpu7_cl.evt file if barycenter correction is selected
         # if self.bc_sel.lower() == "n":
