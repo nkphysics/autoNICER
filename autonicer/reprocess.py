@@ -21,6 +21,13 @@ def extract_gz(file) -> str:
     return f"{file} -> {fname[0]}"
 
 
+def extract_tar(file) -> str:
+    with tarfile.open(file, "r:gz") as tfile:
+        tfile.extractall()
+    os.remove(file)
+    return f"{file} extracted"
+
+
 class Reprocess:
     def __init__(self, cals=None):
         if cals is None:
@@ -114,16 +121,15 @@ class Reprocess:
         os.chdir(f"{self.base_dir}/xti/event_cl/")
         gzs = glob.glob("*.evt.gz")
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            exts = [executor.submit(extract_gz, i) for i in gzs]
-            for j in concurrent.futures.as_completed(exts):
+            exts_gz = [executor.submit(extract_gz, i) for i in gzs]
+            for j in concurrent.futures.as_completed(exts_gz):
                 print(j.result())
+
         tars = glob.glob("*.tar.gz")
-        for i in tars:
-            tfile = tarfile.open(i, "r:gz")
-            print(f"Extracting {i}")
-            tfile.extractall()
-            tfile.close()
-            os.remove(i)
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            ext_tar = [executor.submit(extract_tar, i) for i in tars]
+            for j in concurrent.futures.as_completed(ext_tar):
+                print(j.result())
         if len(gzs) > 0 or len(tars) > 0:
             self.comp_det = True
         os.chdir(self.base_dir)
