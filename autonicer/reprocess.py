@@ -113,9 +113,10 @@ class Reprocess:
         print(colored(f"######## Decompressing {self.obsid} ########", "green"))
         os.chdir(f"{self.base_dir}/xti/event_cl/")
         gzs = glob.glob("*.evt.gz")
-        for i in gzs:
-            mes = extract_gz(i)
-            print(mes)
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            exts = [executor.submit(extract_gz, i) for i in gzs]
+            for j in concurrent.futures.as_completed(exts):
+                print(j.result())
         tars = glob.glob("*.tar.gz")
         for i in tars:
             tfile = tarfile.open(i, "r:gz")
