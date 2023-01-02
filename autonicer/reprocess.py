@@ -9,6 +9,16 @@ from astropy.io import fits
 from termcolor import colored
 import sys
 import glob
+import concurrent.futures
+
+
+def extract_gz(file) -> str:
+    with gzip.open(file, "rb") as gz_in:
+        fname = str(file).split(".gz")
+        with open(fname[0], "wb") as orig_out:
+            shutil.copyfileobj(gz_in, orig_out)
+    os.remove(file)
+    return f"{file} -> {fname[0]}"
 
 
 class Reprocess:
@@ -104,12 +114,8 @@ class Reprocess:
         os.chdir(f"{self.base_dir}/xti/event_cl/")
         gzs = glob.glob("*.evt.gz")
         for i in gzs:
-            with gzip.open(i, "rb") as gz_in:
-                fname = str(i).split(".gz")
-                with open(fname[0], "wb") as orig_out:
-                    print(f"{i} -> {fname[0]}")
-                    shutil.copyfileobj(gz_in, orig_out)
-            os.remove(i)
+            mes = extract_gz(i)
+            print(mes)
         tars = glob.glob("*.tar.gz")
         for i in tars:
             tfile = tarfile.open(i, "r:gz")
