@@ -72,6 +72,6 @@ autoNICER is a program that allows individuals wanting to work with data from th
 
 ### v1.2.3
 - Fixed error handling messages for missing metadata in cl.evt files
-- Switched the pull of required metadata from hdu[0] (primary header) to hdu[1] (event header) for the cl.evt NICER files
+- Switched the pull of required metadata from hdu 0 (primary header) to hdu 1 (event header) for the cl.evt NICER files
 - Added OBSID corolation for easier identification
 
