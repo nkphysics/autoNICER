@@ -9,6 +9,7 @@ import shutil
 import subprocess as sp
 import tarfile
 import glob
+from termcolor import colored
 
 base_dir = os.getcwd()
 os.mkdir("data")
@@ -278,7 +279,7 @@ def test_checkcal_reprocess(capsys):
     out, err = capsys.readouterr()
     passing = f"----------  Passing Reprocess of 3013010102  ----------"
     fail = "DATASETS NOT FOUND"
-    unix = "Migrating to 3013010102"
+    unix = f"Migrating to {colored('3013010102', 'cyan')}"
     unix2 = "test.csv is not a directory! Passing..."
     assert passing in out
     assert fail in out
