@@ -286,6 +286,15 @@ def test_checkcal_reprocess(capsys):
     assert unix2 in out
 
 
+def test_inlist_singledir(capsys):
+    os.chdir(f"{base_dir}/data")
+    os.remove("test.csv")
+    autonicer.run(["--checkcal", "-inlist", "*"])
+    passing = f"Migrating to {colored('3013010102', 'cyan')}"
+    out, err = capsys.readouterr()
+    assert passing in out
+
+
 def test_inlist_readin(capsys):
     os.chdir(f"{base_dir}")
     files = ["requirements.txt", "README.md", "fail.lis"]

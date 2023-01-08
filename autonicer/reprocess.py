@@ -183,13 +183,16 @@ def inlist(argp):
     curr_cals = autonicer.get_caldb_ver()
     try:
         if len(argp.inlist) == 1:
-            df = pd.read_csv(f"{argp.inlist[0]}")
-            for i in df["Input"]:
-                path_sep = i.split("/xti/event_cl/")
-                os.chdir(path_sep[0])
-                if argp.checkcal is True or argp.reprocess is True:
-                    reprocess_check(argp, curr_cals)
-                os.chdir(cwd)
+            try:
+                df = pd.read_csv(f"{argp.inlist[0]}")
+                for i in df["Input"]:
+                    path_sep = i.split("/xti/event_cl/")
+                    os.chdir(path_sep[0])
+                    if argp.checkcal is True or argp.reprocess is True:
+                        reprocess_check(argp, curr_cals)
+                    os.chdir(cwd)
+            except IsADirectoryError:
+                raise FileNotFoundError
         else:
             raise FileNotFoundError
 

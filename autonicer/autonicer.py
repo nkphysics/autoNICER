@@ -299,7 +299,8 @@ class AutoNICER(object):
             print("----------------------------------------------------------")
             cl_file = glob.glob("ni*cl.evt")
             for i in cl_file:
-                gz_comp(i)
+                print(gz_comp(i))
+        print()
 
     def add2q(self, q, base_dir, obsid):
         """
