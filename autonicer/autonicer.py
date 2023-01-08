@@ -294,18 +294,12 @@ class AutoNICER(object):
                 print(j.result())
 
         # compression of the non-bc mpu7_cl.evt file if barycenter correction is selected
-        # if self.bc_sel.lower() == "n":
-        #     pass
-        # else:
-        #     print("")
-        #     print("Compressing cl.evt files")
-        #     print("----------------------------------------------------------")
-        # files and liip to compress the cl files
-        #     cl_file = sp.run(
-        #         "ls ni*cl.evt", shell=True, capture_output=True, encoding="utf-8"
-        #     )
-        #     for i in str(cl_file.stdout).split("\n"):
-        #         gz_comp(i)
+        if self.bc_sel.lower() == "y":
+            print("Compressing cl.evt files")
+            print("----------------------------------------------------------")
+            cl_file = glob.glob("ni*cl.evt")
+            for i in cl_file:
+                gz_comp(i)
 
     def add2q(self, q, base_dir, obsid):
         """

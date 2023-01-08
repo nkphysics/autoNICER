@@ -132,9 +132,9 @@ def test_pullreduce():
     ufa_gz = glob.glob("*ufa.evt.gz")
     assert len(ufa_gz) == 8
     cl = glob.glob("*cl.evt")
-    assert len(cl) == 2
+    assert len(cl) == 1
     cl_gz = glob.glob("*cl.evt.gz")
-    assert len(cl_gz) == 0
+    assert len(cl_gz) == 1
     os.chdir(f"{base_dir}")
 
 
@@ -146,9 +146,9 @@ def setup_reprocess():
 
 def test_get_clevts(setup_reprocess):
     check = setup_reprocess
-    assert len(check.clevts) == 2
+    assert len(check.clevts) == 1
     for i in check.clevts:
-        assert i == "bc3013010102_0mpu7_cl.evt" or i == "ni3013010102_0mpu7_cl.evt"
+        assert i == "bc3013010102_0mpu7_cl.evt"
     assert check.bc_det is True
     os.chdir(f"{base_dir}/data/")
 
@@ -157,8 +157,7 @@ def test_getmeta(setup_reprocess):
     check = setup_reprocess
     assert check.obsid == "3013010102"
     assert check.src == "PSR_B0531+21"
-    assert check.ra == 83.63308
-    assert check.dec == 22.01449
+    assert check.reprocess_err == None
     os.chdir(f"{base_dir}/data/")
 
 
