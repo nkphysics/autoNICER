@@ -1,3 +1,7 @@
+# AutoNICER
+# Copyright 2022-2023 Nicholas Kuechel
+# License Apache 2.0
+
 import autonicer
 import subprocess as sp
 import os
