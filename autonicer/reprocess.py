@@ -41,7 +41,7 @@ class Reprocess:
         self.base_dir = os.getcwd()
         self.last_caldb = None
         self.calstate = None
-        self.src = None
+        self.src = False
         self.obsid = None
         self.ra = None
         self.dec = None
@@ -57,8 +57,7 @@ class Reprocess:
         os.chdir(f"xti/event_cl/")
         files = glob.glob("*cl.evt")
         for i in files:
-            if self.src == None:
-                self.get_meta(i)
+            self.get_meta(i)
             if i == f"bc{self.obsid}_0mpu7_cl.evt":
                 self.bc_det = True
         os.chdir(self.base_dir)
@@ -73,21 +72,14 @@ class Reprocess:
             self.obsid = hdul[0].header["OBS_ID"]
             self.ra = hdul[0].header["RA_OBJ"]
             self.dec = hdul[0].header["DEC_OBJ"]
-            try:
-                self.src = hdul[0].header["OBJECT"]
-                if self.src is None or self.src == "":
-                    self.src = False
-            except KeyError:
-                print("Unable to identify Object -> IS OK")
-                print("Proceeding with Reduction...")
-                self.src = False
+
         except KeyError:
             print(colored("Unable to identify required metadata.", "red"))
             print("Consider Re-downloading and reducing this dataset")
             print("OR")
             print("Try nicerl2 manually")
             self.reprocess_err = True
-        return self.src, self.reprocess_err
+        return self.reprocess_err
 
     def checkcal(self):
         """

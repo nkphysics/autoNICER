@@ -156,7 +156,6 @@ def test_get_clevts(setup_reprocess):
 def test_getmeta(setup_reprocess):
     check = setup_reprocess
     assert check.obsid == "3013010102"
-    assert check.src == "PSR_B0531+21"
     assert check.reprocess_err == None
     os.chdir(f"{base_dir}/data/")
 
@@ -201,8 +200,6 @@ def test_nometa(capsys):
     os.chdir(f"{base_dir}/data/3013010102")
     check2 = autonicer.Reprocess()
     out2, err2 = capsys.readouterr()
-    fail2 = "Unable to identify Object -> IS OK"
-    assert fail2 in out2
     assert fail not in out2
     assert check2.reprocess_err is None
     assert check2.src is False
