@@ -173,8 +173,8 @@ def test_nometa(capsys):
     for i in cl_files:
         hdul = fits.open(i)
         for j, k in metadata.items():
-            metadata[j] = hdul[1].header[j]
-            del hdul[1].header[j]
+            metadata[j] = hdul[0].header[j]
+            del hdul[0].header[j]
         hdul.writeto(i, overwrite=True)
         hdul.close()
     os.chdir(f"{base_dir}/data/3013010102")
@@ -190,12 +190,12 @@ def test_nometa(capsys):
     os.chdir(f"{base_dir}/data/3013010102/xti/event_cl/")
     for i in cl_files:
         hdul = fits.open(i)
-        hdul[1].header["OBS_ID"] = metadata["OBS_ID"]
-        hdul[1].header["RA_OBJ"] = metadata["RA_OBJ"]
-        hdul[1].header["DEC_OBJ"] = metadata["DEC_OBJ"]
-        assert hdul[1].header["OBS_ID"] == hdul[0].header["OBS_ID"]
-        # assert hdul[1].header["RA_OBJ"] == hdul[0].header["RA_OBJ"]
-        # assert hdul[1].header["DEC_OBJ"] == hdul[0].header["DEC_OBJ"]
+        hdul[0].header["OBS_ID"] = metadata["OBS_ID"]
+        hdul[0].header["RA_OBJ"] = metadata["RA_OBJ"]
+        hdul[0].header["DEC_OBJ"] = metadata["DEC_OBJ"]
+        assert metadata["OBS_ID"] == hdul[0].header["OBS_ID"]
+        assert metadata["RA_OBJ"] == hdul[0].header["RA_OBJ"]
+        assert metadata["DEC_OBJ"] == hdul[0].header["DEC_OBJ"]
         hdul.writeto(i, overwrite=True)
         hdul.close()
     os.chdir(f"{base_dir}/data/3013010102")

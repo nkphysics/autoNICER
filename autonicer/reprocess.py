@@ -70,11 +70,11 @@ class Reprocess:
         """
         hdul = fits.open(infile)
         try:
-            self.obsid = hdul[1].header["OBS_ID"]
-            self.ra = hdul[1].header["RA_OBJ"]
-            self.dec = hdul[1].header["DEC_OBJ"]
+            self.obsid = hdul[0].header["OBS_ID"]
+            self.ra = hdul[0].header["RA_OBJ"]
+            self.dec = hdul[0].header["DEC_OBJ"]
             try:
-                self.src = hdul[1].header["OBJECT"]
+                self.src = hdul[0].header["OBJECT"]
                 if self.src is None or self.src == "":
                     self.src = False
             except KeyError:
