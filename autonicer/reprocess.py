@@ -70,6 +70,13 @@ class Reprocess:
         hdul = fits.open(infile)
         try:
             self.obsid = hdul[0].header["OBS_ID"]
+        except KeyError:
+            try:
+                self.obsid = hdul[1].header["OBS_ID"]
+            except KeyError:
+                print(colored("Unable to idenify OBSID", "red"))
+                self.reprocess_err = True
+        try:
             self.ra = hdul[0].header["RA_OBJ"]
             self.dec = hdul[0].header["DEC_OBJ"]
 

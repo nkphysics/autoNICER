@@ -160,19 +160,23 @@ def test_getmeta(setup_reprocess):
     os.chdir(f"{base_dir}/data/")
 
 
+metadata = {
+    "OBS_ID": None,
+    "RA_OBJ": None,
+    "DEC_OBJ": None,
+}
+
+
 def test_nometa(capsys):
     os.chdir(f"{base_dir}/data/3013010102/xti/event_cl/")
     cl_files = glob.glob("*cl.evt")
-    metadata = {
-        "OBS_ID": None,
-        "RA_OBJ": None,
-        "DEC_OBJ": None,
-    }
     for i in cl_files:
         hdul = fits.open(i)
+        assert hdul[0].header["OBS_ID"] == hdul[1].header["OBS_ID"]
         for j, k in metadata.items():
             metadata[j] = hdul[0].header[j]
             del hdul[0].header[j]
+        del hdul[1].header["OBS_ID"]
         hdul.writeto(i, overwrite=True)
         hdul.close()
     os.chdir(f"{base_dir}/data/3013010102")
@@ -181,25 +185,26 @@ def test_nometa(capsys):
     out, err = capsys.readouterr()
     fail = "Consider Re-downloading and reducing this dataset"
     fail_reprocess = "!!!!! CANNOT REPROCESS !!!!!"
+    no_obsid = colored("Unable to idenify OBSID", "red")
+    assert no_obsid in out
     assert fail in out
     assert fail_reprocess in out
     assert check.reprocess_err is True
 
+
+def test_no_primary_obsid(capsys):
     os.chdir(f"{base_dir}/data/3013010102/xti/event_cl/")
+    cl_files = glob.glob("*cl.evt")
     for i in cl_files:
         hdul = fits.open(i)
-        hdul[0].header["OBS_ID"] = metadata["OBS_ID"]
+        hdul[1].header["OBS_ID"] = metadata["OBS_ID"]
         hdul[0].header["RA_OBJ"] = metadata["RA_OBJ"]
         hdul[0].header["DEC_OBJ"] = metadata["DEC_OBJ"]
-        assert metadata["OBS_ID"] == hdul[0].header["OBS_ID"]
-        assert metadata["RA_OBJ"] == hdul[0].header["RA_OBJ"]
-        assert metadata["DEC_OBJ"] == hdul[0].header["DEC_OBJ"]
         hdul.writeto(i, overwrite=True)
         hdul.close()
     os.chdir(f"{base_dir}/data/3013010102")
     check2 = autonicer.Reprocess()
-    out2, err2 = capsys.readouterr()
-    assert fail not in out2
+    out, err = capsys.readouterr()
     assert check2.reprocess_err is None
     assert check2.src is False
 
