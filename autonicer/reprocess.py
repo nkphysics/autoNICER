@@ -58,8 +58,8 @@ class Reprocess:
         files = glob.glob("*cl.evt")
         for i in files:
             self.get_meta(i)
-            if i == f"bc{self.obsid}_0mpu7_cl.evt":
-                self.bc_det = True
+        if f"bc{self.obsid}_0mpu7_cl.evt" in files:
+            self.bc_det = True
         os.chdir(self.base_dir)
         return files
 

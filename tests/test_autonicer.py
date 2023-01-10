@@ -164,7 +164,6 @@ def test_nometa(capsys):
     os.chdir(f"{base_dir}/data/3013010102/xti/event_cl/")
     cl_files = glob.glob("*cl.evt")
     metadata = {
-        "OBJECT": None,
         "OBS_ID": None,
         "RA_OBJ": None,
         "DEC_OBJ": None,
