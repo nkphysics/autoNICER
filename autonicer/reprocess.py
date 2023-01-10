@@ -75,6 +75,8 @@ class Reprocess:
             self.dec = hdul[1].header["DEC_OBJ"]
             try:
                 self.src = hdul[1].header["OBJECT"]
+                if self.src is None or self.src == "":
+                    self.src = False
             except KeyError:
                 print("Unable to identify Object -> IS OK")
                 print("Proceeding with Reduction...")
