@@ -265,6 +265,7 @@ class AutoNICER(object):
                     input(colored("autoNICER", "blue") + " > ")
                 ).split(" ")
                 self.commands(enter)
+        return cmdstate
 
     def nicer_compress(self):
         """

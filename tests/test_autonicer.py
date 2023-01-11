@@ -95,6 +95,7 @@ def test_cycle_sel():
 def test_rm_single_sel():
     an.command_center("rm 1013010112")
     assert an.observations.count("1013010112") == 0
+    assert "1013010112" not in an.observations
     lentest(58)
 
 
@@ -121,10 +122,15 @@ def test_get_caldbver():
     assert autonicer.get_caldb_ver() == "xti20221001"
 
 
-def test_pullreduce():
+def test_pullreduce(capsys):
     an.q_set = "y"
     an.q_name = "test"
     an.command_center("3013010102")
+    sel = an.command_center("sel")
+    assert sel is True
+    out, err = capsys.readouterr()
+    assert "Observations Selected:" in out
+    assert "3013010102" in out
     an.command_center("done")
     os.chdir(f"{base_dir}/data/3013010102/xti/event_cl/")
     ufa = glob.glob("*ufa.evt")
