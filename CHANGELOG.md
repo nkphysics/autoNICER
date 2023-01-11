@@ -75,3 +75,9 @@ autoNICER is a program that allows individuals wanting to work with data from th
 - Switched the pull of required metadata from hdu 0 (primary header) to hdu 1 (event header) for the cl.evt NICER files
 - Added OBSID corolation for easier identification
 
+### v1.2.4
+- Added in multi-threaded compression/decompression of files (should speed up runtime)
+- Re-added in compression of non barycenter corrected mpu7_cl.evt files if a barycenter corrrected cl.evt file is created
+- Fixed bug with an unexpected `Target: ` prompt appearing if OBJECT metadata cannot be found
+- Fixed bug with auto-detection of barycenter correction parsing
+
