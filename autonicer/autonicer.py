@@ -61,6 +61,8 @@ class AutoNICER(object):
         def null_parse(var):
             if var == "" or var is True:
                 var = "y"
+            else:
+                var = "n"
             return var
 
         logq = False
@@ -323,9 +325,7 @@ class AutoNICER(object):
         """
         sp.call(f"nicerl2 indir={obsid}/ clobber=yes", shell=True)
         obsindex = self.observations.index(obsid)
-        if self.bc_sel.lower() == "n":
-            pass
-        else:
+        if self.bc_sel.lower() == "y":
             sp.call(
                 f"barycorr infile={obsid}/xti/event_cl/ni{obsid}_0mpu7_cl.evt outfile={obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt orbitfiles={obsid}/auxil/ni{obsid}.orb refframe=ICRS ra={self.ras[obsindex]} dec={self.decs[obsindex]} ephem=JPLEPH.430 clobber=yes",
                 shell=True,
