@@ -81,3 +81,6 @@ autoNICER is a program that allows individuals wanting to work with data from th
 - Fixed bug with an unexpected `Target: ` prompt appearing if OBJECT metadata cannot be found
 - Fixed bug with auto-detection of barycenter correction parsing
 
+### v1.2.5
+- Fixed vulnerabilites with cryptography dep (CVE-2023-0286 and CVE-2023-23931)
+
