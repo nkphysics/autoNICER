@@ -1,4 +1,6 @@
 [![PyPI](https://img.shields.io/pypi/v/autonicer.svg)](https://pypi.org/project/autonicer/)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/autonicer.svg?label=PyPI%20downloads)](https://pypi.org/project/autonicer/)
+
 # autoNICER
 A piece of software that allows for the automated retrieval, and default data reduction of NICER data. This software was developed to automate the retrieval of NICER data and perform standardized data reduction on the retrieved NICER data. 
 This project unaffiliated with the NICER team, NASA, the Goddard Space Flight Center (GSFC), and HEASARC. Thus, under no circumstances should anyone consider this project endorsed or recommended by the afformentioned agencies and organizations.
