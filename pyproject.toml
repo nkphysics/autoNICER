@@ -1,30 +1,37 @@
-[tool.poetry]
+[build-system]
+requires = ["setuptools", "setuptools-scm", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
 name = "autonicer"
 version = "1.2.5"
 description = "A program that retrieves NICER observational data sets and performs a default data reduction process on the NICER observational data"
-authors = ["Tsar Bomba Nick <njkuechel@protonmail.com>"]
-license = "Apache-2.0"
+authors = [
+  {name = "Tsar Bomba Nick", email = "njkuechel@protonmail.com" }
+]
+license = {file = "LICENSE"}
 readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "astropy >= 4.2.1",
+    "astroquery >= 0.4.3",
+    "numpy >= 1.20.3",
+    "pandas >= 1.2.4",
+    "termcolor >= 1.1.0",
+    "certifi >= 2022.12.7",
+    "cryptography >= 41.0.0",
+    "requests >= 2.31.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.8"
-astropy = ">4.2.1"
-astroquery = ">0.4.3"
-numpy = ">1.20.3"
-pandas = ">1.2.4"
-termcolor = "^1.1.0"
-certifi = "^2022.12.7"
-cryptography = ">=39.0.1"
-requests = ">=2.31.0"
+[project.optional-dependencies]
+dev = [
+    "pytest-cov >= 3.0.0",
+    "black >= 22.6.0",
+    "pytest >= 7.2.0",
+]
 
-[tool.poetry.dev-dependencies]
-pytest-cov = ">=3.0.0"
-black = "^22.6.0"
-pytest = ">=7.2.0"
+[tool.setuptools]
+packages = ["autonicer"]
 
-[tool.poetry.scripts]
+[project.scripts]
 autonicer = 'autonicer:run'
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
