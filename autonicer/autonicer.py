@@ -100,6 +100,7 @@ class AutoNICER(object):
         heasarc = Heasarc()
         try:
             warnings.simplefilter("ignore", category=AstropyWarning)
+            Heasarc.clear_cache()
             xti = heasarc.query_object(
                 self.obj, mission="nicermastr"
             )  # calls NICER master catalogue for an input object

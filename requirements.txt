@@ -1,8 +1,8 @@
 astropy==5.3
-astroquery==0.4.6
-autonicer @ file:///home/nick/Research/Pulsar_Timing/autoHeasoft/autoNICER
+astroquery==0.4.7.dev8479
 beautifulsoup4==4.12.2
 black==23.3.0
+build==0.10.0
 certifi==2023.5.7
 cffi==1.15.1
 charset-normalizer==3.1.0
@@ -26,6 +26,7 @@ platformdirs==3.5.1
 pluggy==1.0.0
 pycparser==2.21
 pyerfa==2.0.0.3
+pyproject_hooks==1.0.0
 pytest==7.3.1
 pytest-cov==4.1.0
 python-dateutil==2.8.2
