@@ -26,7 +26,7 @@ For more in depth instructions and documentation check out the wiki:
 <https://github.com/nkphysics/autoNICER/wiki>
 
 ## Pre-Requisite Software
-- HEASoft v6.29c, v6.30.1, RECOMMENDED v6.31.1 <https://heasarc.gsfc.nasa.gov/docs/software/lheasoft/>
+- HEASoft v6.29-v6.33, MOST RECENT VERSION RECOMMENDED (v6.33 as of 2024-03-01) <https://heasarc.gsfc.nasa.gov/docs/software/lheasoft/>
 
 A video tutorial on how to generally install heasoft can be found here: <https://youtu.be/3-gobnSEuDo>
 - Remote CALDB <https://heasarc.gsfc.nasa.gov/docs/heasarc/caldb/caldb_remote_access.html>
@@ -47,8 +47,9 @@ OR
 For development cases:
 - Clone the repo
 - cd into the project directory
-- Run `poetry install` to install the needed dependencies
+- Install with dev deps `python -m pip install .[dev]`
 - Start working!
+- Run tests locally before submitting a PR
 
 ## Basic Usage
 
