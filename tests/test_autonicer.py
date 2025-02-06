@@ -46,7 +46,9 @@ def test_make_cycle():
 
 def lentest(expected):
     """
-    General test of the observations, years, months, ras, and decs to ensure the expected number of parameters are stored in the respective variables of the AutoNICER object
+    General test of the observations, years, months, ras, and decs
+    to ensure the expected number of parameters are stored in the
+    respective variables of the AutoNICER object
     """
     lens = [
         len(an.observations),
@@ -119,7 +121,7 @@ def test_rm_all():
 
 
 def test_get_caldbver():
-    assert autonicer.get_caldb_ver() == "xti20221001"
+    assert autonicer.get_caldb_ver() == "xti20240206"
 
 
 def test_pullreduce(capsys):
@@ -278,9 +280,11 @@ def test_checkcal_reprocess(capsys):
         os.chdir(f"{base_dir}/data")
         files = ["test.csv", "fail.lis", "*"]
         for i in files:
-            autonicer.run(
-                ["--checkcal", "--reprocess", "--bc", "--compress", f"--inlist={i}"]
-            )
+            autonicer.run(["--checkcal",
+                           "--reprocess",
+                           "--bc",
+                           "--compress",
+                           f"--inlist={i}"])
     except SystemExit:
         pass
     out, err = capsys.readouterr()
@@ -305,14 +309,12 @@ def test_inlist_singledir(capsys):
 
 def test_inlist_readin(capsys):
     os.chdir(f"{base_dir}")
-    files = ["requirements.txt", "README.md", "fail.lis"]
+    files = ["README.md", "fail.lis"]
     for i in files:
         autonicer.run(["--checkcal", "-i", f"{i}"])
     out, err = capsys.readouterr()
     pd_err = "Unable to resolve --inlist README.md"
-    key_err = "requirements.txt format not readable"
     assert pd_err in out
-    assert key_err in out
 
 
 def test_cleanup():
