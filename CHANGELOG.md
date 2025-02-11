@@ -84,3 +84,9 @@ autoNICER is a program that allows individuals wanting to work with data from th
 ### v1.2.5
 - Fixed vulnerabilites with cryptography dep (CVE-2023-0286 and CVE-2023-23931)
 
+### v1.2.6
+- Updated astroquery depencency to dev version of 0.4.7 or newer
+- Added cache clearing upon each new session
+
+### v1.2.7
+- Pegged astroquery dependency to 0.4.7 due to breaking changes introduced in astroquery >= 0.4.8

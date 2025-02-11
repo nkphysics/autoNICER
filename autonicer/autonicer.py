@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 # AutoNICER
-# Copyright 2022-2023 Nicholas Kuechel
+# Copyright 2022-2025 Nicholas Kuechel
 # License Apache 2.0
 
 import subprocess as sp

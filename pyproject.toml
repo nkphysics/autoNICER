@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "autonicer"
-version = "1.2.6"
+version = "1.2.7"
 description = "A program that retrieves NICER observational data sets and performs a default data reduction process on the NICER observational data"
 authors = [
   {name = "Tsar Bomba Nick", email = "njkuechel@protonmail.com" }
@@ -14,7 +14,7 @@ readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
     "astropy >= 4.2.1",
-    "astroquery >= 0.4.7.dev8479",
+    "astroquery == 0.4.7",
     "numpy >= 1.20.3",
     "pandas >= 1.2.4",
     "termcolor >= 1.1.0",
