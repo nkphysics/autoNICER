@@ -8,7 +8,8 @@ import argparse as ap
 
 def run(args=None):
     p = ap.ArgumentParser(
-        description="A program for piplining NICER data reduction. Run by just typing autonicer."
+        description=("A program for piplining NICER data reduction. "
+                     "Run by just typing autonicer.")
     )
 
     p.add_argument(
@@ -66,6 +67,6 @@ def run(args=None):
         else:
             inlist(argp)
     else:
-        an = autonicer.AutoNICER(argp.src, argp.bc, argp.compress)
+        an = AutoNICER(argp.src, argp.bc, argp.compress)
         an.call_nicer()
         an.command_center()

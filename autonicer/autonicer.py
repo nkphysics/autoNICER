@@ -1,13 +1,11 @@
-#! /usr/bin/env python3
-
 # AutoNICER
 # Copyright 2022-2025 Nicholas Kuechel
 # License Apache 2.0
 
 import subprocess as sp
 import os
+import sys
 import pandas as pd
-import time
 import numpy as np
 from astroquery.heasarc import Heasarc
 from astroquery import exceptions
@@ -20,14 +18,24 @@ import shutil
 import warnings
 import glob
 import concurrent.futures
+import logging
 from astropy.utils.exceptions import AstropyWarning
+from importlib.metadata import version
+
+
+AUTONICER = os.path.basename(sys.argv[0])
+VERSION = version('autonicer')
+logger = logging.getLogger(AUTONICER)
+handler = logging.StreamHandler(stream=sys.stdout)
+logger.addHandler(handler)
 
 
 def get_caldb_ver():
     """
     Gets most up to nicer caldb version
     """
-    caldb = sp.run("nicaldbver", shell=True, capture_output=True, encoding="utf-8")
+    caldb = sp.run("nicaldbver", shell=True,
+                   capture_output=True, encoding="utf-8")
     convo = str(caldb.stdout).split("\n")
     return convo[0]
 
@@ -43,8 +51,8 @@ class AutoNICER(object):
         self.decs = []
         self.caldb_ver = ""
 
-        print(colored("##############  Auto NICER  ##############", "cyan"))
-        print()
+        logger.info(colored("##########  Auto NICER  ##########\n",
+                    "cyan"))
         self.obj = src
         self.bc_sel = bc
         self.q_set = "n"
@@ -86,7 +94,7 @@ class AutoNICER(object):
                         self.q_path = self.q_path.replace(" ", "")
                         self.q_path = self.q_path.replace('"', "")
                 elif ne.lower() == "new":
-                    self.q_name = str(input("Name of output log file (no .csv): "))
+                    self.q_name = str(input("Name of log file (no .csv): "))
 
                 else:
                     self.q_set = "n"
@@ -95,7 +103,8 @@ class AutoNICER(object):
 
     def call_nicer(self):
         """
-        Querys the nicermastr catalog for all observations of the specified source(self.obj)
+        Querys the nicermastr catalog for all observations
+        of the specified source(self.obj)
         """
         heasarc = Heasarc()
         try:
@@ -105,13 +114,15 @@ class AutoNICER(object):
                 self.obj, mission="nicermastr"
             )  # calls NICER master catalogue for an input object
         except exceptions.InvalidQueryError:
-            print(colored(f"UNABLE TO RESOLVE {self.obj} in HEASARC!", "red"))
-            print(colored(f"Exiting ...", "red"))
+            logger.info(colored(f"UNABLE TO RESOLVE {self.obj} in HEASARC!",
+                                "red"))
+            logger.info(colored("Exiting ...", "red"))
             exit()
         else:
             xti = Table(xti).to_pandas()
             cnt = 0
-            for i in xti["OBSID"]:  # converts the form of the NICER obsid's to strings
+            # converts the form of the NICER obsid's to strings
+            for i in xti["OBSID"]:
                 i = i.decode()
                 xti.loc[cnt, "OBSID"] = str(i).replace(" ", "")
                 cnt = cnt + 1
@@ -136,11 +147,11 @@ class AutoNICER(object):
         selstate = True
         dup_cnt = self.observations.count(enter)
         if dup_cnt != 0:
-            print(f"{enter} is already queued up... ignoring")
+            logger.info(f"{enter} is already queued up... ignoring")
         else:
             try:
                 row = self.xti.loc[self.xti["OBSID"] == enter]
-                print(f"Adding {enter}")
+                logger.info(f"Adding {enter}")
                 self.observations.append(enter)
                 dt = row["TIME"]
                 row.reset_index(drop=True, inplace=True)
@@ -148,7 +159,8 @@ class AutoNICER(object):
                 year = str(dt[0].year)
                 self.years.append(year)
                 month = dt[0].month
-                # basic if else statement to fix single digit months not having a zero out front
+                # basic if else statement to fix single digit months
+                # not having a zero out front
                 if month < 10:
                     month = "0" + str(month)
                 else:
@@ -158,7 +170,7 @@ class AutoNICER(object):
                 self.decs.append(row["DEC"][0])
                 return selstate
             except KeyError:
-                print(colored("OBSID NOT FOUND!", "red"))
+                logger.info(colored("OBSID NOT FOUND!", "red"))
                 del self.observations[-1]
                 selstate = False
                 return selstate
@@ -193,29 +205,31 @@ class AutoNICER(object):
 
         elif enter[0].lower() == "sel":
             # displays all selected observations in the cmd line
-            print("Observations Selected:")
+            logger.info("Observations Selected:")
             for i in self.observations:
-                print(i)
+                logger.info(i)
             return True
 
-        elif enter[0] == None or enter[0] == "":
+        elif enter[0] is None or enter[0] == "":
             # Error message for nothing entered in the prompt
-            print("Nothing entered...")
-            print("!!!ENTER SOMETHING!!!")
+            logger.info("Nothing entered...")
+            logger.info("!!!ENTER SOMETHING!!!")
             return True
 
         elif enter[0].lower() == "back":
             # Deletes the previously entered obsid
             try:
-                print(f"Removing {self.observations[-1]}")
+                logger.info(f"Removing {self.observations[-1]}")
             except IndexError:
-                print(colored("Nothing found to Remove!", "red"))
+                logger.info(colored("Nothing found to Remove!", "red"))
             else:
                 self.rm_obs("back")
             return True
 
         elif enter[0].lower() == "cycle":
-            row = self.make_cycle().loc[self.make_cycle()["Cycle#"] == float(enter[1])]
+            row = self.make_cycle().loc[
+                self.make_cycle()["Cycle#"] == float(enter[1])
+            ]
             for i in row["OBSID"]:
                 self.sel_obs(i)
             return True
@@ -224,16 +238,16 @@ class AutoNICER(object):
             try:
                 self.rm_obs(enter[1])
             except ValueError:
-                print(colored("Nothing found to Remove!", "red"))
+                logger.info(colored("Nothing found to Remove!", "red"))
             return True
 
         elif enter[0] == "settings":
-            print(f"Target: {self.obj}")
-            print(f"Barycenter Correction: {self.bc_sel}")
+            logger.info(f"Target: {self.obj}")
+            logger.info(f"Barycenter Correction: {self.bc_sel}")
             if self.q_set == "y":
-                print(f"Log Name: {q_name}")
-                print(f"Output Log: {self.q_set}")
-            print(f".gz compresion: {self.tar_sel}")
+                logger.info(f"Log Name: {self.q_name}")
+                logger.info(f"Output Log: {self.q_set}")
+            logger.info(f".gz compresion: {self.tar_sel}")
 
         elif enter[0] == "exit":
             exit()
@@ -246,7 +260,7 @@ class AutoNICER(object):
                 else:
                     raise ValueError
             except ValueError:
-                print("Unknown Entry")
+                logger.info("Unknown Entry")
                 return False
 
     def command_center(self, enter=None):
@@ -257,8 +271,8 @@ class AutoNICER(object):
         orig_in = enter
         cmdstate = None
         self.st = True
-        while self.st == True:
-            if orig_in != None:
+        while self.st is True:
+            if orig_in is not None:
                 cmdstate = self.commands(enter.split(" "))
                 self.st = False
             else:
@@ -272,11 +286,13 @@ class AutoNICER(object):
         """
         compresses .evt files
         """
-        print(colored("##########  .gz compression  ##########", "green"))
+        logger.info(colored("##########  .gz compression  ##########",
+                    "green"))
 
         def gz_comp(file):
             """
-            .gz compression of a single file and removal of original file after compression
+            .gz compression of a single file and
+            removal of original file after compression
             """
             if file == "":
                 pass
@@ -287,24 +303,24 @@ class AutoNICER(object):
                 os.remove(file)
                 return f"{file} -> {file}.gz"
 
-        print("Compressing ufa.evt files")
-        print("----------------------------------------------------------")
+        logger.info("Compressing ufa.evt files")
+        logger.info(("-" * 50) + "\n")
         # files and loop to compress the ufa files
         files = glob.glob("*ufa.evt")
         with concurrent.futures.ThreadPoolExecutor() as executor:
             comps = [executor.submit(gz_comp, i) for i in files]
 
             for j in concurrent.futures.as_completed(comps):
-                print(j.result())
+                logger.info(j.result())
 
-        # compression of the non-bc mpu7_cl.evt file if barycenter correction is selected
+        # compression of the non-bc mpu7_cl.evt file
+        # if barycenter correction is selected
         if self.bc_sel.lower() == "y":
-            print("Compressing cl.evt files")
-            print("----------------------------------------------------------")
+            logger.info("Compressing cl.evt files")
+            logger.info(("-" * 50) + "\n")
             cl_file = glob.glob("ni*cl.evt")
             for i in cl_file:
-                print(gz_comp(i))
-        print()
+                logger.info(gz_comp(i))
 
     def add2q(self, q, base_dir, obsid):
         """
@@ -312,7 +328,8 @@ class AutoNICER(object):
         """
         newline = pd.DataFrame(
             {
-                "Input": [f"{base_dir}/{obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt"],
+                "Input": [(f"{base_dir}/{obsid}/xti/"
+                           f"event_cl/bc{obsid}_0mpu7_cl.evt")],
                 "OBSID": [f"NI{obsid}"],
                 "CALDB": [f"{self.caldb_ver}"],
                 "DateTime": [f"{datetime.datetime.now()}"],
@@ -323,13 +340,19 @@ class AutoNICER(object):
 
     def reduce(self, obsid):
         """
-        Performs standardized data reduction scheme calling nicerl2 and barycorr if set
+        Performs standardized data reduction scheme calling
+        nicerl2 and barycorr if set
         """
         sp.call(f"nicerl2 indir={obsid}/ clobber=yes", shell=True)
         obsindex = self.observations.index(obsid)
         if self.bc_sel.lower() == "y":
             sp.call(
-                f"barycorr infile={obsid}/xti/event_cl/ni{obsid}_0mpu7_cl.evt outfile={obsid}/xti/event_cl/bc{obsid}_0mpu7_cl.evt orbitfiles={obsid}/auxil/ni{obsid}.orb refframe=ICRS ra={self.ras[obsindex]} dec={self.decs[obsindex]} ephem=JPLEPH.430 clobber=yes",
+                (f"barycorr infile={obsid}/xti/event_cl/"
+                 f"ni{obsid}_0mpu7_cl.evt outfile={obsid}"
+                 f"/xti/event_cl/bc{obsid}_0mpu7_cl.evt "
+                 f"orbitfiles={obsid}/auxil/ni{obsid}.orb "
+                 f"refframe=ICRS ra={self.ras[obsindex]} "
+                 f"dec={self.decs[obsindex]} ephem=JPLEPH.430 clobber=yes"),
                 shell=True,
             )
 
@@ -339,26 +362,30 @@ class AutoNICER(object):
         Puts the retrieved data through a standardized data reduction scheme
         """
         downCommand = (
-            "wget -q -nH --no-check-certificate --cut-dirs=5 -r -l0 -c -N -np -R "
-            + "'index*'"
-            + " -erobots=off --retr-symlinks https://heasarc.gsfc.nasa.gov/FTP/nicer/data/obs/"
+            "wget -q -nH --no-check-certificate "
+            "--cut-dirs=5 -r -l0 -c -N -np -R "
+            "'index*'"
+            " -erobots=off --retr-symlinks "
+            "https://heasarc.gsfc.nasa.gov/FTP/nicer/data/obs/"
         )
 
         for obsid in self.observations:
             qindex = self.observations.index(obsid)
-            print("")
-            print("--------------------------------------------------------------")
-            print("             Prosessing OBSID: " + colored(str(obsid), "cyan"))
-            print("--------------------------------------------------------------")
+            logger.info("")
+            logger.info("-" * 60)
+            logger.info((" " * 10) + "Prosessing OBSID: " +
+                        colored(str(obsid), "cyan"))
+            logger.info("-" * 60)
             pull_templ = (
-                f"{downCommand}{self.years[qindex]}_{self.months[qindex]}//{obsid}"
+                f"{downCommand}{self.years[qindex]}_"
+                f"{self.months[qindex]}//{obsid}"
             )
-            end_args = f"--show-progress --progress=bar:force"
-            print(colored("Downloading xti data...", "green"))
+            end_args = "--show-progress --progress=bar:force"
+            logger.info(colored("Downloading xti data...", "green"))
             sp.call(f"{pull_templ}/xti/ {end_args}", shell=True)
-            print(colored("Downloadng log data...", "green"))
+            logger.info(colored("Downloadng log data...", "green"))
             sp.call(f"{pull_templ}/log/ {end_args}", shell=True)
-            print(colored("Downloading auxil data...", "green"))
+            logger.info(colored("Downloading auxil data...", "green"))
             sp.call(f"{pull_templ}/auxil/ {end_args}", shell=True)
             self.caldb_ver = get_caldb_ver()
             self.reduce(obsid)

@@ -3,8 +3,8 @@
 # License Apache 2.0
 
 import autonicer
-import subprocess as sp
 import os
+import logging
 import shutil
 import gzip
 import tarfile
@@ -14,6 +14,9 @@ from termcolor import colored
 import sys
 import glob
 import concurrent.futures
+
+AUTONICER = os.path.basename(sys.argv[0])
+logger = logging.getLogger(AUTONICER)
 
 
 def extract_gz(file) -> str:
@@ -54,7 +57,7 @@ class Reprocess:
         """
         Gets all cl.evt files associated with an existing NICER dataset
         """
-        os.chdir(f"xti/event_cl/")
+        os.chdir("xti/event_cl/")
         files = glob.glob("*cl.evt")
         for i in files:
             self.get_meta(i)
@@ -74,17 +77,18 @@ class Reprocess:
             try:
                 self.obsid = hdul[1].header["OBS_ID"]
             except KeyError:
-                print(colored("Unable to idenify OBSID", "red"))
+                logger.info(colored("Unable to idenify OBSID", "red"))
                 self.reprocess_err = True
         try:
             self.ra = hdul[0].header["RA_OBJ"]
             self.dec = hdul[0].header["DEC_OBJ"]
 
         except KeyError:
-            print(colored("Unable to identify required metadata.", "red"))
-            print("Consider Re-downloading and reducing this dataset")
-            print("OR")
-            print("Try nicerl2 manually")
+            logger.info(colored("Unable to identify required metadata.",
+                                "red"))
+            logger.info("Consider Re-downloading and reducing this dataset")
+            logger.info("OR")
+            logger.info("Try nicerl2 manually")
             self.reprocess_err = True
         return self.reprocess_err
 
@@ -92,16 +96,17 @@ class Reprocess:
         """
         Checks the status of an existing obsid's calibrations
         """
-        print(f"Latest NICER CALDB: {self.curr_caldb}")
-        print("")
+        logger.info(f"Latest NICER CALDB: {self.curr_caldb}")
+        logger.info("")
         for i in self.clevts:
             os.chdir(f"{self.base_dir}/xti/event_cl/")
             hdul = fits.open(i)
             try:
                 self.last_caldb = hdul[1].header["CALDBVER"]
-                print(f"CALDB for {i}: {self.last_caldb}")
+                logger.info(f"CALDB for {i}: {self.last_caldb}")
             except KeyError:
-                print(colored("!!!!! CANNOT IDENTIFY CALDB !!!!!", "red"))
+                logger.info(colored("!!!!! CANNOT IDENTIFY CALDB !!!!!",
+                                    "red"))
                 break
 
             premessage = ""
@@ -112,29 +117,31 @@ class Reprocess:
             else:
                 self.calstate = False
                 premessage = "NOT"
-            print(colored(f"{premessage} Up to date with latest NICER CALDB", color))
-            print("")
+            logger.info(colored(f"{premessage} Up to date with latest NICER CALDB", color))
+            logger.info("")
             hdul.close()
         os.chdir(self.base_dir)
         return self.calstate
 
     def decompress(self):
         """
-        Extracts/decompresses all files in xti/event_cl in .gz or .tar.gz formats
+        Extracts/decompresses all files in xti/event_cl
+        in .gz or .tar.gz formats
         """
-        print(colored(f"######## Decompressing {self.obsid} ########", "green"))
+        logger.info(colored(f"######## Decompressing {self.obsid} ########",
+                            "green"))
         os.chdir(f"{self.base_dir}/xti/event_cl/")
         gzs = glob.glob("*.evt.gz")
         with concurrent.futures.ThreadPoolExecutor() as executor:
             exts_gz = [executor.submit(extract_gz, i) for i in gzs]
             for j in concurrent.futures.as_completed(exts_gz):
-                print(j.result())
+                logger.info(j.result())
 
         tars = glob.glob("*.tar.gz")
         with concurrent.futures.ThreadPoolExecutor() as executor:
             ext_tar = [executor.submit(extract_tar, i) for i in tars]
             for j in concurrent.futures.as_completed(ext_tar):
-                print(j.result())
+                logger.info(j.result())
         if len(gzs) > 0 or len(tars) > 0:
             self.comp_det = True
         os.chdir(self.base_dir)
@@ -145,9 +152,9 @@ class Reprocess:
         Reprocesses an existing dataset with latest calibrations
         """
         if self.calstate is True:
-            print(f"----------  Passing Reprocess of {self.obsid}  ----------")
+            logger.info(f"----------  Passing Reprocess of {self.obsid}  ----------")
         elif self.reprocess_err is True:
-            print(colored("!!!!! CANNOT REPROCESS !!!!!"), "red")
+            logger.info(colored("!!!!! CANNOT REPROCESS !!!!!"), "red")
         else:
             self.decompress()
             if bc is True:
@@ -177,8 +184,8 @@ def reprocess_check(argp, cals=None):
 
 def inlist(argp):
     """
-    Runs --reprocess and/or checkcal for an input file with paths to NICER OBSID dirs
-    or .evt files
+    Runs --reprocess and/or checkcal for an input file
+    with paths to NICER OBSID dirs or .evt files
     """
     cwd = os.getcwd()
     curr_cals = autonicer.get_caldb_ver()
@@ -205,16 +212,17 @@ def inlist(argp):
             for i in dirs:
                 try:
                     os.chdir(i)
-                    print(f"Migrating to {colored(i, 'cyan')}")
+                    logger.info(f"Migrating to {colored(i, 'cyan')}")
                     if argp.checkcal is True or argp.reprocess is True:
                         reprocess_check(argp, curr_cals)
                     os.chdir(cwd)
                 except NotADirectoryError:
-                    print(f"{i} is not a directory! Passing...")
+                    logger.info(f"{i} is not a directory! Passing...")
         else:
-            print(colored(f"DATASETS NOT FOUND", "red"))
+            logger.info(colored("DATASETS NOT FOUND", "red"))
     except pd.errors.ParserError:
-        print(colored(f"Unable to resolve --inlist {argp.inlist[0]}", "red"))
+        logger.info(colored(f"Unable to resolve --inlist {argp.inlist[0]}",
+                            "red"))
     except KeyError:
-        print(colored(f"{argp.inlist[0]} format not readable", "red"))
-        print("Format must be csv with Input column for inlist files...")
+        logger.info(colored(f"{argp.inlist[0]} format not readable", "red"))
+        logger.info("Format must be csv with Input column for inlist files.")

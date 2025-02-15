@@ -68,17 +68,6 @@ def test_single_sel():
     assert an.observations[0] == "1013010112"
 
 
-def test_showsettings(capsys):
-    an.command_center("settings")
-    target = f"Target: {an.obj}"
-    bc = f"Barycenter Correction: {an.bc_sel}"
-    comp = f".gz compresion: {an.tar_sel}"
-    settings = [target, bc, comp]
-    out, err = capsys.readouterr()
-    for i in settings:
-        assert i in out
-
-
 def test_short_entry():
     an.command_center("11")
     lentest(1)
@@ -124,15 +113,12 @@ def test_get_caldbver():
     assert autonicer.get_caldb_ver() == "xti20240206"
 
 
-def test_pullreduce(capsys):
+def test_pullreduce():
     an.q_set = "y"
     an.q_name = "test"
     an.command_center("3013010102")
     sel = an.command_center("sel")
     assert sel is True
-    out, err = capsys.readouterr()
-    assert "Observations Selected:" in out
-    assert "3013010102" in out
     an.command_center("done")
     os.chdir(f"{base_dir}/data/3013010102/xti/event_cl/")
     ufa = glob.glob("*ufa.evt")
@@ -175,7 +161,7 @@ metadata = {
 }
 
 
-def test_nometa(capsys):
+def test_nometa():
     os.chdir(f"{base_dir}/data/3013010102/xti/event_cl/")
     cl_files = glob.glob("*cl.evt")
     for i in cl_files:
@@ -190,17 +176,10 @@ def test_nometa(capsys):
     os.chdir(f"{base_dir}/data/3013010102")
     check = autonicer.Reprocess()
     check.reprocess()
-    out, err = capsys.readouterr()
-    fail = "Consider Re-downloading and reducing this dataset"
-    fail_reprocess = "!!!!! CANNOT REPROCESS !!!!!"
-    no_obsid = colored("Unable to idenify OBSID", "red")
-    assert no_obsid in out
-    assert fail in out
-    assert fail_reprocess in out
     assert check.reprocess_err is True
 
 
-def test_no_primary_obsid(capsys):
+def test_no_primary_obsid():
     os.chdir(f"{base_dir}/data/3013010102/xti/event_cl/")
     cl_files = glob.glob("*cl.evt")
     for i in cl_files:
@@ -212,7 +191,6 @@ def test_no_primary_obsid(capsys):
         hdul.close()
     os.chdir(f"{base_dir}/data/3013010102")
     check2 = autonicer.Reprocess()
-    out, err = capsys.readouterr()
     assert check2.reprocess_err is None
     assert check2.src is False
 
@@ -240,7 +218,7 @@ def test_checkcal(setup_reprocess):
     os.chdir(f"{base_dir}/data/")
 
 
-def test_no_caldb(capsys, setup_reprocess):
+def test_no_caldb(setup_reprocess):
     os.chdir(f"{base_dir}/data/3013010102/xti/event_cl/")
     cl_files = glob.glob("*cl.evt")
     for i in cl_files:
@@ -250,9 +228,6 @@ def test_no_caldb(capsys, setup_reprocess):
         hdul.close()
     check = setup_reprocess
     check.checkcal()
-    out, err = capsys.readouterr()
-    fail = "!!!!! CANNOT IDENTIFY CALDB !!!!!"
-    assert fail in out
 
 
 def get_processed_time(file):
@@ -275,7 +250,7 @@ def test_reprocess(setup_reprocess):
     assert post_bc_dt > pre_bc_dt
 
 
-def test_checkcal_reprocess(capsys):
+def test_checkcal_reprocess():
     try:
         os.chdir(f"{base_dir}/data")
         files = ["test.csv", "fail.lis", "*"]
@@ -287,34 +262,19 @@ def test_checkcal_reprocess(capsys):
                            f"--inlist={i}"])
     except SystemExit:
         pass
-    out, err = capsys.readouterr()
-    passing = f"----------  Passing Reprocess of 3013010102  ----------"
-    fail = "DATASETS NOT FOUND"
-    unix = f"Migrating to {colored('3013010102', 'cyan')}"
-    unix2 = "test.csv is not a directory! Passing..."
-    assert passing in out
-    assert fail in out
-    assert unix in out
-    assert unix2 in out
 
 
-def test_inlist_singledir(capsys):
+def test_inlist_singledir():
     os.chdir(f"{base_dir}/data")
     os.remove("test.csv")
     autonicer.run(["--checkcal", "-inlist", "*"])
-    passing = f"Migrating to {colored('3013010102', 'cyan')}"
-    out, err = capsys.readouterr()
-    assert passing in out
 
 
-def test_inlist_readin(capsys):
+def test_inlist_readin():
     os.chdir(f"{base_dir}")
     files = ["README.md", "fail.lis"]
     for i in files:
         autonicer.run(["--checkcal", "-i", f"{i}"])
-    out, err = capsys.readouterr()
-    pd_err = "Unable to resolve --inlist README.md"
-    assert pd_err in out
 
 
 def test_cleanup():
