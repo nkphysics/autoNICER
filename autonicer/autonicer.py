@@ -22,7 +22,6 @@ import logging
 import argparse as ap
 from .reprocess import reprocess_check
 from .reprocess import inlist
-from astropy.utils.exceptions import AstropyWarning
 from importlib.metadata import version
 
 
@@ -111,7 +110,6 @@ class AutoNICER(object):
         """
         heasarc = Heasarc()
         try:
-            warnings.simplefilter("ignore", category=AstropyWarning)
             Heasarc.clear_cache()
             xti = heasarc.query_object(
                 self.obj, mission="nicermastr"
