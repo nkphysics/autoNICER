@@ -8,14 +8,13 @@ import sys
 import pandas as pd
 import numpy as np
 from astroquery.heasarc import Heasarc
+from astropy.coordinates import SkyCoord
 from astroquery import exceptions
-from astropy.table import Table
 from astropy.time import Time
 from termcolor import colored
 import datetime
 import gzip
 import shutil
-import warnings
 import glob
 import concurrent.futures
 import logging
@@ -111,8 +110,9 @@ class AutoNICER(object):
         heasarc = Heasarc()
         try:
             Heasarc.clear_cache()
-            xti = heasarc.query_object(
-                self.obj, mission="nicermastr"
+            position = SkyCoord.from_name(self.obj)
+            xti = heasarc.query_region(
+                position, catalog="nicermastr"
             )  # calls NICER master catalogue for an input object
         except exceptions.InvalidQueryError:
             logger.info(colored(f"UNABLE TO RESOLVE {self.obj} in HEASARC!",
@@ -120,13 +120,8 @@ class AutoNICER(object):
             logger.info(colored("Exiting ...", "red"))
             exit()
         else:
-            xti = Table(xti).to_pandas()
-            cnt = 0
-            # converts the form of the NICER obsid's to strings
-            for i in xti["OBSID"]:
-                i = i.decode()
-                xti.loc[cnt, "OBSID"] = str(i).replace(" ", "")
-                cnt = cnt + 1
+            xti = xti.to_pandas()
+            xti.columns = [name.upper() for name in xti.columns]
             xti["TIME"] = Time(xti["TIME"], format="mjd").to_datetime()
             self.xti = xti
 
