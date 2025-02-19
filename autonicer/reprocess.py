@@ -117,8 +117,9 @@ class Reprocess:
             else:
                 self.calstate = False
                 premessage = "NOT"
-            logger.info(colored(f"{premessage} Up to date with latest NICER CALDB", color))
-            logger.info("")
+            logger.info(colored((f"{premessage} Up to date "
+                                 "with latest NICER CALDB\n"),
+                        color))
             hdul.close()
         os.chdir(self.base_dir)
         return self.calstate
@@ -152,7 +153,7 @@ class Reprocess:
         Reprocesses an existing dataset with latest calibrations
         """
         if self.calstate is True:
-            logger.info(f"----------  Passing Reprocess of {self.obsid}  ----------")
+            logger.info(f"Passing Reprocess of {self.obsid}\n")
         elif self.reprocess_err is True:
             logger.info(colored("!!!!! CANNOT REPROCESS !!!!!"), "red")
         else:
@@ -160,12 +161,13 @@ class Reprocess:
             if bc is True:
                 self.bc_det = bc
             an = autonicer.AutoNICER(src=self.src, bc=self.bc_det, comp=False)
-            an.observations.append(self.obsid)
-            an.ras.append(self.ra)
-            an.decs.append(self.dec)
+            reprocess_dict = {"OBSID": self.obsid,
+                              "ra": self.ra,
+                              "dec": self.dec}
+            an.queue.append(reprocess_dict)
             proc_dir = self.base_dir.split(f"{self.obsid}")
             os.chdir(proc_dir[0])
-            an.reduce(self.obsid)
+            an.reduce(reprocess_dict)
             os.chdir(f"{self.base_dir}/xti/event_cl/")
             if compress is True or self.comp_det is True:
                 an.nicer_compress()

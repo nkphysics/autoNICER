@@ -44,69 +44,38 @@ def test_make_cycle():
         cnt += 1
 
 
-def lentest(expected):
-    """
-    General test of the observations, years, months, ras, and decs
-    to ensure the expected number of parameters are stored in the
-    respective variables of the AutoNICER object
-    """
-    lens = [
-        len(an.observations),
-        len(an.years),
-        len(an.months),
-        len(an.ras),
-        len(an.decs),
-    ]
-    for i in lens:
-        assert i == expected
-    return True
-
-
-def test_single_sel():
+def test_selections():
+    # test selecting 1 obsid
     an.command_center("1013010112")
-    lt1 = lentest(1)
-    assert an.observations[0] == "1013010112"
-
-
-def test_short_entry():
+    assert an.queue[0]['OBSID'] == "1013010112"
+    assert len(an.queue) == 1
+    # test short entry/ incomplete obsid
     an.command_center("11")
-    lentest(1)
-
-
-def test_wrong_obsid():
+    assert len(an.queue) == 1
+    # test obsid from a different source not queried
     an.command_center("1013010000")
-    lentest(1)
-
-
-def test_cycle_sel():
+    assert len(an.queue) == 1
+    # test selecting by entire cycle
     an.command_center("cycle 1")
-    lentest(59)
-
-
-def test_rm_single_sel():
+    assert len(an.queue) == 59
+    # test removal of specific obsid
     an.command_center("rm 1013010112")
-    assert an.observations.count("1013010112") == 0
-    assert "1013010112" not in an.observations
-    lentest(58)
-
-
-def test_back():
-    last = an.observations[-1]
+    sel_obsids = [i["OBSID"] for i in an.queue]
+    assert "1013010112" not in sel_obsids
+    assert len(an.queue) == 58
+    # test removal of previously inserted obsid
+    last_obsid = sel_obsids[-1]
     an.command_center("back")
-    assert an.observations.count(last) == 0
-    lentest(57)
-
-
-def test_duplicate():
+    sel_obsids = [i["OBSID"] for i in an.queue]
+    assert last_obsid not in sel_obsids
+    assert len(an.queue) == 57
+    # test duplicates not getting added to the queue
     an.command_center("cycle 1")
-    lentest(59)
+    assert len(an.queue) == 59
     an.command_center("1013010112")
-    lentest(59)
-
-
-def test_rm_all():
+    assert len(an.queue) == 59
     an.command_center("rm all")
-    lentest(0)
+    assert len(an.queue) == 0
 
 
 def test_get_caldbver():
