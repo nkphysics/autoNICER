@@ -319,6 +319,53 @@ class AutoNICER(object):
         q = pd.concat([q, newline])
         q.to_csv(self.q_path, index=False)
 
+    def _make_download_links(self, info: dict) -> list:
+        """
+        Makes all the download links for each file of an OBSID
+
+        Parameters:
+        info: dict, information from AutoNICER.queue
+                    required to make all download links
+                    (OSBID, year, month, ra, dec)
+
+        Returns:
+        list, all links as str for the given OBSID dataset
+        """
+        base_url = "https://nasa-heasarc.s3.amazonaws.com/nicer/data/obs/"
+        base_url = f"{base_url}{info['year']}_{info['month']}/{info['OBSID']}"
+        file_urls = [f"/log/ni{info['OBSID']}_errlog.html",
+                     f"/log/ni{info['OBSID']}_joblog.html",
+                     f"/auxil/ni{info['OBSID']}.orb.gz",
+                     f"/auxil/ni{info['OBSID']}.mkf.gz",
+                     f"/auxil/ni{info['OBSID']}.cat",
+                     f"/auxil/ni{info['OBSID']}.att.gz",
+                     f"/xti/event_cl/ni{info['OBSID']}_0mpu7_cl.evt.gz",
+                     f"/xti/event_cl/ni{info['OBSID']}_0mpu7_ufa.evt.gz",
+                     f"/xti/event_uf/ni{info['OBSID']}_0mpu0_uf.evt.gz",
+                     f"/xti/event_uf/ni{info['OBSID']}_0mpu1_uf.evt.gz"
+                     f"/xti/event_uf/ni{info['OBSID']}_0mpu2_uf.evt.gz",
+                     f"xti/event_uf/ni{info['OBSID']}_0mpu3_uf.evt.gz",
+                     f"/xti/event_uf/ni{info['OBSID']}_0mpu4_uf.evt.gz",
+                     f"/xti/event_uf/ni{info['OBSID']}_0mpu5_uf.evt.gz",
+                     f"/xti/event_uf/ni{info['OBSID']}_0mpu6_uf.evt.gz",
+                     f"/xti/hk/ni{info['OBSID']}_0mpu0.hk.gz",
+                     f"/xti/hk/ni{info['OBSID']}_0mpu1.hk.gz",
+                     f"/xti/hk/ni{info['OBSID']}_0mpu2.hk.gz",
+                     f"/xti/hk/ni{info['OBSID']}_0mpu3.hk.gz",
+                     f"/xti/hk/ni{info['OBSID']}_0mpu4.hk.gz",
+                     f"/xti/hk/ni{info['OBSID']}_0mpu5.hk.gz",
+                     f"/xti/hk/ni{info['OBSID']}_0mpu6.hk.gz",
+                     f"/xti/products/ni{info['OBSID']}_lc.png",
+                     f"/xti/products/ni{info['OBSID']}_pi.png",
+                     f"/xti/products/ni{info['OBSID']}mpu7.arf.gz",
+                     f"/xti/products/ni{info['OBSID']}mpu7.rmf.gz",
+                     f"/xti/products/ni{info['OBSID']}mpu7_bg.pha.gz",
+                     f"/xti/products/ni{info['OBSID']}mpu7_load.xcm.gz",
+                     f"/xti/products/ni{info['OBSID']}mpu7_sk.arf.gz",
+                     f"/xti/products/ni{info['OBSID']}mpu7_sr.lc.gz",
+                     f"/xti/products/ni{info['OBSID']}mpu7_sr.pha.gz"]
+        return [f"{base_url}{url}" for url in file_urls]
+
     def reduce(self, data):
         """
         Performs standardized data reduction scheme calling
