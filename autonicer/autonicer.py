@@ -27,8 +27,6 @@ from importlib.metadata import version
 AUTONICER = os.path.basename(sys.argv[0])
 VERSION = version('autonicer')
 logger = logging.getLogger(AUTONICER)
-handler = logging.StreamHandler(stream=sys.stdout)
-logger.addHandler(handler)
 
 
 def get_caldb_ver():
@@ -47,9 +45,6 @@ class AutoNICER(object):
         self.xti = 0
         self.queue = []
         self.caldb_ver = ""
-
-        logger.info(colored("##########  Auto NICER  ##########\n",
-                    "cyan"))
         self.obj = src
         self.bc_sel = bc
         self.q_set = "n"
@@ -452,12 +447,20 @@ def run(args=None):
     )
 
     argp = p.parse_args(args)
+
+    level = logging.INFO
+    logging.basicConfig(stream=sys.stdout,
+                        level=level,
+                        format="")
+
     if argp.checkcal is True or argp.reprocess is True:
         if argp.inlist is None:
             reprocess_check(argp)
         else:
             inlist(argp)
     else:
+        logger.info(colored("##########  Auto NICER  ##########\n",
+                    "cyan"))
         an = AutoNICER(argp.src, argp.bc, argp.compress)
         an.call_nicer()
         an.command_center()
