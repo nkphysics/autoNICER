@@ -22,6 +22,10 @@ import argparse as ap
 from .reprocess import reprocess_check
 from .reprocess import inlist
 from importlib.metadata import version
+import asyncio
+import aiohttp
+from pathlib import Path
+from tqdm import tqdm
 
 
 AUTONICER = os.path.basename(sys.argv[0])
@@ -37,6 +41,44 @@ def get_caldb_ver():
                    capture_output=True, encoding="utf-8")
     convo = str(caldb.stdout).split("\n")
     return convo[0]
+
+
+async def download_file(url: str) -> None:
+    """
+    Downloads data file from a specified url
+
+    Parameters:
+    url: str, url to fetch data from
+    """
+    split_url = url.split("/")
+    file = '/'.join(split_url[7:])
+    file = Path(file)
+    file.parent.mkdir(exist_ok=True, parents=True)
+    file_path = file.resolve()
+    file_name = file.name
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            if resp.status == 200:
+                file_size = int(resp.headers['Content-Length'])
+                with open(file_path, 'wb') as fd:
+                    progress = tqdm(total=file_size, desc=file_name,
+                                    unit="B", unit_scale=True)
+                    while True:
+                        try:
+                            chunk = await resp.content.read(1024)
+                        except (asyncio.CancelledError,
+                                aiohttp.ClientResponseError) as e:
+                            logger.error(f"Chunk read error: {e}")
+                            break
+                        if not chunk:
+                            progress.close()
+                            break
+                        fd.write(chunk)
+                        progress.update(len(chunk))
+                    progress.close()
+            else:
+                logger.info(f"Download: {url} failed "
+                            f"with code: {resp.status}")
 
 
 class AutoNICER(object):
