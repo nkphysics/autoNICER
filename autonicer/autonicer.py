@@ -81,6 +81,22 @@ async def download_file(url: str) -> None:
                             f"with code: {resp.status}")
 
 
+async def download_obsid(urls: list) -> None:
+    """
+    Downloads all files from urls to make up an entire obsid dataset
+
+    Parameters:
+    urls: list, urls to all files that make up an entire obsid dataset
+    """
+    sem = asyncio.Semaphore(4)
+    async with sem:
+        tasks = []
+        for url in urls:
+            task = asyncio.create_task(download_file(url))
+            tasks.append(task)
+        await asyncio.gather(*tasks)
+
+
 class AutoNICER(object):
     def __init__(self, src=None, bc=None, comp=None):
         self.st = True
