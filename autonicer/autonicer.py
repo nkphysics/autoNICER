@@ -68,7 +68,7 @@ async def download_file(url: str) -> None:
                             chunk = await resp.content.read(1024)
                         except (asyncio.CancelledError,
                                 aiohttp.ClientResponseError) as e:
-                            logger.error(f"Chunk read error: {e}")
+                            logger.error(f"ERROR: Chunk read error: {e}\n")
                             break
                         if not chunk:
                             progress.close()
@@ -77,8 +77,8 @@ async def download_file(url: str) -> None:
                         progress.update(len(chunk))
                     progress.close()
             else:
-                logger.info(f"Download: {url} failed "
-                            f"with code: {resp.status}")
+                logger.info(f"Download: {file_name} failed "
+                            f"with code: {resp.status}\n")
 
 
 async def download_obsid(urls: list) -> None:
@@ -400,9 +400,9 @@ class AutoNICER(object):
                      f"/xti/event_cl/ni{info['OBSID']}_0mpu7_cl.evt.gz",
                      f"/xti/event_cl/ni{info['OBSID']}_0mpu7_ufa.evt.gz",
                      f"/xti/event_uf/ni{info['OBSID']}_0mpu0_uf.evt.gz",
-                     f"/xti/event_uf/ni{info['OBSID']}_0mpu1_uf.evt.gz"
+                     f"/xti/event_uf/ni{info['OBSID']}_0mpu1_uf.evt.gz",
                      f"/xti/event_uf/ni{info['OBSID']}_0mpu2_uf.evt.gz",
-                     f"xti/event_uf/ni{info['OBSID']}_0mpu3_uf.evt.gz",
+                     f"/xti/event_uf/ni{info['OBSID']}_0mpu3_uf.evt.gz",
                      f"/xti/event_uf/ni{info['OBSID']}_0mpu4_uf.evt.gz",
                      f"/xti/event_uf/ni{info['OBSID']}_0mpu5_uf.evt.gz",
                      f"/xti/event_uf/ni{info['OBSID']}_0mpu6_uf.evt.gz",
@@ -446,39 +446,23 @@ class AutoNICER(object):
         Downloads the NICER data
         Puts the retrieved data through a standardized data reduction scheme
         """
-        downCommand = (
-            "wget -q -nH --no-check-certificate "
-            "--cut-dirs=5 -r -l0 -c -N -np -R "
-            "'index*'"
-            " -erobots=off --retr-symlinks "
-            "https://heasarc.gsfc.nasa.gov/FTP/nicer/data/obs/"
-        )
 
         for data in self.queue:
             logger.info("")
             logger.info("-" * 60)
-            logger.info((" " * 10) + "Prosessing OBSID: " +
+            logger.info((" " * 14) + "Prosessing OBSID: " +
                         colored(str(data["OBSID"]), "cyan"))
             logger.info("-" * 60)
-            pull_templ = (
-                f"{downCommand}{data['year']}_"
-                f"{data['month']}//{data['OBSID']}"
-            )
-            end_args = "--show-progress --progress=bar:force"
-            logger.info(colored("Downloading xti data...", "green"))
-            sp.call(f"{pull_templ}/xti/ {end_args}", shell=True)
-            logger.info(colored("Downloadng log data...", "green"))
-            sp.call(f"{pull_templ}/log/ {end_args}", shell=True)
-            logger.info(colored("Downloading auxil data...", "green"))
-            sp.call(f"{pull_templ}/auxil/ {end_args}", shell=True)
+            # Download dataset
+            urls = self._make_download_links(data)
+            asyncio.run(download_obsid(urls))
+
             self.caldb_ver = get_caldb_ver()
             self.reduce(data)
 
             base_dir = os.getcwd()
             os.chdir(f"{data['OBSID']}/xti/event_cl/")
-            if self.tar_sel.lower() == "n":
-                pass
-            else:
+            if self.tar_sel.lower() == "y":
                 self.nicer_compress()
             os.chdir(base_dir)
             if self.q_set == "y" and self.q_path != 0:
