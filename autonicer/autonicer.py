@@ -455,7 +455,9 @@ class AutoNICER(object):
             logger.info("-" * 60)
             # Download dataset
             urls = self._make_download_links(data)
-            asyncio.run(download_obsid(urls))
+            for url in urls:
+                asyncio.run(download_file(url))
+            # asyncio.run(download_obsid(urls))
 
             self.caldb_ver = get_caldb_ver()
             self.reduce(data)
