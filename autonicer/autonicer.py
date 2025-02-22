@@ -546,6 +546,12 @@ def run(args=None):
         nargs="+",
     )
 
+    p.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {VERSION}"
+    )
+
     argp = p.parse_args(args)
 
     level = logging.INFO
