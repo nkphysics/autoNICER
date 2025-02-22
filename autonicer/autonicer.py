@@ -538,9 +538,10 @@ def run(args=None):
 
     p.add_argument(
         "-i",
-        "-inlist",
         "--inlist",
-        help=("Input .csv list with path to OBSID dirs or mpu7_cl.evt "
+        dest="inlist",
+        help=(".csv or Unix style pathname pattern whhich lists paths "
+              "to OBSID dirs or mpu7_cl.evt "
               "files for use with --reprocess and/or --checkcal"),
         default=None,
         nargs="+",

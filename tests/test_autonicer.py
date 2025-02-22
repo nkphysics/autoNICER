@@ -236,7 +236,7 @@ def test_checkcal_reprocess():
 def test_inlist_singledir():
     os.chdir(f"{base_dir}/data")
     os.remove("test.csv")
-    autonicer.run(["--checkcal", "-inlist", "*"])
+    autonicer.run(["--checkcal", "--inlist", "*"])
 
 
 def test_inlist_readin():
