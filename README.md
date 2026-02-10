@@ -26,7 +26,7 @@ For more in depth instructions and documentation check out the wiki:
 <https://github.com/nkphysics/autoNICER/wiki>
 
 ## Pre-Requisite Software
-- HEASoft v6.29-v6.34, MOST RECENT VERSION RECOMMENDED (v6.34 as of 2025-02-22) <https://heasarc.gsfc.nasa.gov/docs/software/lheasoft/>
+- HEASoft v6.29-v6.36, MOST RECENT VERSION RECOMMENDED (v6.36 as of 2026-02-10) <https://heasarc.gsfc.nasa.gov/docs/software/lheasoft/>
 
 A video tutorial on how to generally install heasoft can be found here: <https://youtu.be/3-gobnSEuDo>
 - Remote CALDB <https://heasarc.gsfc.nasa.gov/docs/heasarc/caldb/caldb_remote_access.html>
